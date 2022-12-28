@@ -49,7 +49,7 @@
     },
     "extra": {
         "hyperf": {
-            "config": "OnixSystemsPHP\\HyperfAppSettings\\ConfigProvider"
+            "config": "OnixSystemsPHP\\HyperfAuth\\ConfigProvider"
         }
     }
 }
