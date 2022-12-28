@@ -1,0 +1,55 @@
+{
+    "name": "onix-systems-php/hyperf-auth",
+    "type": "extension",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "hyperf"
+    ],
+    "description": "An authentication extension for an application",
+    "autoload": {
+        "psr-4": {
+            "OnixSystemsPHP\\HyperfAuth\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OnixSystemsPHP\\HyperfAuth\\Test\\": "tests"
+        }
+    },
+    "require": {
+        "php": ">=8.0",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "96qbhy/hyperf-auth": "^2.6",
+        "onix-systems-php/hyperf-core": ">=1.0.7",
+        "hyperf/contract": "^2.2|^3.0",
+        "hyperf/session": "^2.2|^3.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.2|^3.0",
+        "mockery/mockery": "^1.0",
+        "phpstan/phpstan": "^1.0",
+        "phpunit/phpunit": ">=7.0",
+        "swoole/ide-helper": "^4.5"
+    },
+    "suggest": {
+        "swow/swow": "Required to create swow components."
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit -c phpunit.xml --colors=always",
+        "analyse": "phpstan analyse --memory-limit 300M -l 0 ./src",
+        "cs-fix": "php-cs-fixer fix $1"
+    },
+    "extra": {
+        "hyperf": {
+            "config": "OnixSystemsPHP\\HyperfAppSettings\\ConfigProvider"
+        }
+    }
+}
