@@ -12,6 +12,7 @@ use OnixSystemsPHP\HyperfAuth\Service\LogoutUserService;
 use OnixSystemsPHP\HyperfAuth\Service\RefreshTokenService;
 use OnixSystemsPHP\HyperfCore\Controller\AbstractController;
 use OnixSystemsPHP\HyperfCore\Resource\ResourceSuccess;
+use OpenApi\Annotations as OA;
 
 class AuthController extends AbstractController
 {
