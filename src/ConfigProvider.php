@@ -11,7 +11,7 @@ class ConfigProvider
         return [
             'dependencies' => [
                 \OnixSystemsPHP\HyperfCore\Contract\CoreAuthenticatableProvider::class => \OnixSystemsPHP\HyperfAuth\SessionManager::class,
-                \OnixSystemsPHP\HyperfAuth\Contract\TokenGuardProvider::class => \OnixSystemsPHP\HyperfAuth\SessionManager::class,
+                \OnixSystemsPHP\HyperfAuth\Contract\TokenGuardProvider::class => \OnixSystemsPHP\HyperfAuth\AuthManager::class,
                 \Qbhy\SimpleJwt\Interfaces\Encrypter::class => \OnixSystemsPHP\HyperfAuth\Hashers\PasswordHashEncrypterFactory::class,
                 \OnixSystemsPHP\HyperfAuth\Contract\AuthenticatableRepository::class => \App\Repository\UserRepository::class,
             ],
