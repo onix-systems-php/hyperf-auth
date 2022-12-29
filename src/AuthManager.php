@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace OnixSystemsPHP\HyperfAuth;
 
 use Hyperf\Contract\ConfigInterface;
+use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
+use OnixSystemsPHP\HyperfAuth\Contract\TokenGuardProvider;
 use OnixSystemsPHP\HyperfAuth\Guards\JwtGuard;
-use Qbhy\HyperfAuth\Authenticatable;
 use Qbhy\HyperfAuth\AuthGuard;
 use Qbhy\HyperfAuth\AuthManager as BaseAuthManager;
 
-class AuthManager extends BaseAuthManager
+class AuthManager extends BaseAuthManager implements TokenGuardProvider
 {
     public function __construct(
         ConfigInterface $config,
@@ -43,7 +44,7 @@ class AuthManager extends BaseAuthManager
         $this->sessionManager->getSession()->invalidate();
     }
 
-    public function jwtGuard(): JwtGuard
+    public function tokenGuard(): JwtGuard
     {
         /** @var JwtGuard $guard */
         $guard = $this->guard('jwt');

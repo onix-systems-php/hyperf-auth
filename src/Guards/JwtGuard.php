@@ -8,6 +8,7 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\SessionInterface;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\Utils\Str;
+use OnixSystemsPHP\HyperfAuth\Contract\TokenGuard;
 use OnixSystemsPHP\HyperfAuth\DTO\AuthTokensDTO;
 use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
 use OnixSystemsPHP\HyperfAuth\SessionManager;
@@ -19,7 +20,7 @@ use Qbhy\SimpleJwt\Exceptions\InvalidTokenException;
 use Qbhy\SimpleJwt\Exceptions\TokenExpiredException;
 use Qbhy\SimpleJwt\JWTManager;
 
-class JwtGuard extends AbstractAuthGuard
+class JwtGuard extends AbstractAuthGuard implements TokenGuard
 {
     protected JWTManager $jwtManager;
 

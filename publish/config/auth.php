@@ -15,6 +15,14 @@ return [
         'guard' => 'jwt',
         'provider' => 'jwt-users',
     ],
+    'apps' => [
+        // app => [role, role]
+        'user' => ['user'],
+    ],
+    'validators' => [
+        'login' => 'required|email',
+        'password' => 'required|min:6',
+    ],
     'guards' => [
         'jwt' => [
             'driver' => JwtGuard::class,
