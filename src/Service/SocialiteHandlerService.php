@@ -111,13 +111,6 @@ class SocialiteHandlerService
 
         $user = $createUserService->run($userSocialiteDTO, $role);
 
-        // $user = $this->createUserService->run(CreateUserDTO::make([
-        //     'email' => $userSocialiteDTO->email,
-        //     'first_name' => $userSocialiteDTO->first_name,
-        //     'last_name' => $userSocialiteDTO->last_name,
-        //     'role' => $role,
-        // ]));
-
         return $this->assignUserToSocialite($user, $userSocialiteDTO);
     }
 
@@ -159,16 +152,5 @@ class SocialiteHandlerService
         } catch (\Throwable) {
             // ignore exceptions
         }
-
-        // try {
-        //     $file = $this->addExternalFileService->run($userSocialiteDTO->avatar_url, $user);
-        // } catch (\Throwable) {
-        //     // do nothing, skip update
-        //     $file = null;
-        // }
-        // if (!empty($file)) {
-        //     $updateProfileDto = UpdateProfileDTO::make(['avatar' => ['id' => $file->id]]);
-        //     $this->updateProfileService->run($user->id, $updateProfileDto, true);
-        // }
     }
 }
