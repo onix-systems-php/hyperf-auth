@@ -47,7 +47,7 @@ class LoginUserService
         $this->vf
             ->make($params->toArray(), [
                 'login' => $this->config->get('auth.validators.login', 'required|email'),
-                'password' => $this->config->get('auth.validators.login', 'required|min:6'),
+                'password' => $this->config->get('auth.validators.password', 'required|min:6'),
             ])
             ->validate();
     }
