@@ -13,6 +13,7 @@ Includes the following classes:
 - Controller:
   - AuthController;
   - AuthSocialiteController;
+  - WebSocketController;
 - DTO:
   - AuthTokensDTO;
   - LoginDTO;
@@ -51,3 +52,14 @@ Publish config and database migrations:
 ```shell script
 php bin/hyperf.php vendor:publish onix-systems-php/hyperf-auth
 ```
+
+Import auth routes:
+```php
+require_once './vendor/onix-systems-php/hyperf-auth/publish/routes.php';
+```
+
+
+## Socket.io controller
+
+You can import `ws_routes`, use `WebSocketController` directly and place logic to another controller,
+but it is reasonable to extend `WebSocketController` instead.

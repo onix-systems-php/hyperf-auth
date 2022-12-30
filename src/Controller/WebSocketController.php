@@ -42,6 +42,7 @@ class WebSocketController extends BaseNamespace
         $user = $this->authManager->tokenGuard()->fromAccessToken($data['access_token']);
 
         if (empty($user)) {
+            $socket->emit('authentication', null);
             return;
         }
 
@@ -50,6 +51,7 @@ class WebSocketController extends BaseNamespace
         $this->redis->hSet(WSAuth::USER_SOCKET, (string) $user->getId(), $socket->getSid());
         $this->redis->hSet(WSAuth::SOCKET_SESSION, $socket->getSid(), $sessionId);
         $this->redis->hSet(WSAuth::CONNECT_TIMESTAMP, (string) $user->getId(), (string) Carbon::now()->timestamp);
+        $socket->emit('authentication', $user->getId());
     }
 
     #[Event('disconnect')]

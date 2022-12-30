@@ -13,7 +13,7 @@ use OnixSystemsPHP\HyperfAuth\Constants\WSAuth;
 use OnixSystemsPHP\HyperfAuth\SessionManager;
 
 #[Aspect]
-final class WsEventAspect extends AbstractAspect
+final class WsEventAuthAspect extends AbstractAspect
 {
     public $annotations = [
         Event::class,
@@ -27,9 +27,14 @@ final class WsEventAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint): mixed
     {
-        /** @var Socket $socket */
-        $socket = $proceedingJoinPoint->getArguments()[0];
-        if ($this->redis->hExists(WSAuth::SOCKET_SESSION, $socket->getSid())) {
+        $socket = null;
+        foreach ($proceedingJoinPoint->getArguments() as $argument) {
+            if ($argument instanceof Socket) {
+                $socket = $argument;
+                break;
+            }
+        }
+        if (! empty($socket) && $this->redis->hExists(WSAuth::SOCKET_SESSION, $socket->getSid())) {
             $sessionId = $this->redis->hGet(WSAuth::SOCKET_SESSION, $socket->getSid());
             $this->sessionManager->startFromId($sessionId);
         }
