@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace OnixSystemsPHP\HyperfAuth\Controller;
 
 use Carbon\Carbon;
-use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\Redis\Redis;
 use Hyperf\SocketIOServer\Annotation\Event;
 use Hyperf\SocketIOServer\BaseNamespace;
@@ -14,10 +13,8 @@ use Hyperf\SocketIOServer\SocketIOConfig;
 use Hyperf\WebSocketServer\Sender;
 use OnixSystemsPHP\HyperfAuth\AuthManager;
 use OnixSystemsPHP\HyperfAuth\Constants\WSAuth;
-use OnixSystemsPHP\HyperfAuth\Middleware\WsSessionMiddleware;
 use OnixSystemsPHP\HyperfAuth\SessionManager;
 
-#[Middleware(WsSessionMiddleware::class)]
 class WebSocketController extends BaseNamespace
 {
 
@@ -39,8 +36,8 @@ class WebSocketController extends BaseNamespace
         // do nothing
     }
 
-    #[Event('login')]
-    public function login(Socket $socket, $data)
+    #[Event('authenticate')]
+    public function authenticate(Socket $socket, $data)
     {
         $user = $this->authManager->tokenGuard()->fromAccessToken($data['access_token']);
 
@@ -58,7 +55,7 @@ class WebSocketController extends BaseNamespace
     #[Event('disconnect')]
     public function disconnect(Socket $socket)
     {
-        $user = $this->authenticatableProvider->user();
+        $user = $this->sessionManager->user();
 
         $this->redis->hDel(WSAuth::SOCKET_SESSION, $socket->getSid());
         if (! empty($user)) {
