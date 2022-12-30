@@ -79,19 +79,7 @@ class JwtGuard extends AbstractAuthGuard implements TokenGuard
     {
         try {
             $accessToken = $this->getAccessToken();
-            $user = null;
-            if (! empty($accessToken)) {
-                $jwtPayload = $this->getJwtManager()->parse($accessToken)->getPayload();
-                $session = $this->getSession($jwtPayload['session_token']);
-                if ($session->has('user') && ! empty($session->get('user'))) {
-                    $user = $session->get('user');
-                } elseif (! empty($jwtPayload['sub'])) {
-                    /** @var Authenticatable $user */
-                    $user = $this->userProvider->retrieveByCredentials($jwtPayload['sub']);
-                    $session->set('user', $user);
-                }
-            }
-            return $user;
+            return $this->parseUser($accessToken);
         } catch (\Throwable $exception) {
             return null;
         }
@@ -173,6 +161,32 @@ class JwtGuard extends AbstractAuthGuard implements TokenGuard
             return $this->request->input('refresh_token');
         }
         return null;
+    }
+
+    public function fromAccessToken(?string $jwtToken = null): Authenticatable|null
+    {
+        try {
+            return $this->parseUser($jwtToken);
+        } catch (\Throwable $exception) {
+            return null;
+        }
+    }
+
+    protected function parseUser(?string $accessToken): Authenticatable|null
+    {
+        $user = null;
+        if (! empty($accessToken)) {
+            $jwtPayload = $this->getJwtManager()->parse($accessToken)->getPayload();
+            $session = $this->getSession($jwtPayload['session_token']);
+            if ($session->has('user') && ! empty($session->get('user'))) {
+                $user = $session->get('user');
+            } elseif (! empty($jwtPayload['sub'])) {
+                /** @var Authenticatable $user */
+                $user = $this->userProvider->retrieveByCredentials($jwtPayload['sub']);
+                $session->set('user', $user);
+            }
+        }
+        return $user;
     }
 
     private function getSession(?string $sessionToken = null): SessionInterface

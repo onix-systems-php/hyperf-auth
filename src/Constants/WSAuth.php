@@ -9,6 +9,7 @@ use Hyperf\Constants\Annotation\Constants;
 #[Constants]
 class WSAuth extends AbstractConstants
 {
-    public const UID_SID = 'uid-sid';
+    public const USER_SOCKET = 'uid-sid';
+    public const SOCKET_SESSION = 'sid-session';
     public const CONNECT_TIMESTAMP = 'connect-timestamp';
 }

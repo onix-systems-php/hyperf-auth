@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace OnixSystemsPHP\HyperfAuth\Controller;
 
 use Carbon\Carbon;
+use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\Redis\Redis;
 use Hyperf\SocketIOServer\Annotation\Event;
 use Hyperf\SocketIOServer\BaseNamespace;
@@ -11,9 +12,12 @@ use Hyperf\SocketIOServer\SidProvider\SidProviderInterface;
 use Hyperf\SocketIOServer\Socket;
 use Hyperf\SocketIOServer\SocketIOConfig;
 use Hyperf\WebSocketServer\Sender;
+use OnixSystemsPHP\HyperfAuth\AuthManager;
 use OnixSystemsPHP\HyperfAuth\Constants\WSAuth;
-use OnixSystemsPHP\HyperfCore\Contract\CoreAuthenticatableProvider;
+use OnixSystemsPHP\HyperfAuth\Middleware\WsSessionMiddleware;
+use OnixSystemsPHP\HyperfAuth\SessionManager;
 
+#[Middleware(WsSessionMiddleware::class)]
 class WebSocketController extends BaseNamespace
 {
 
@@ -21,7 +25,8 @@ class WebSocketController extends BaseNamespace
         Sender $sender,
         SidProviderInterface $sidProvider,
         ?SocketIOConfig $config = null,
-        protected CoreAuthenticatableProvider $authenticatableProvider,
+        protected AuthManager $authManager,
+        protected SessionManager $sessionManager,
         protected Redis $redis,
     ) {
         parent::__construct($sender, $sidProvider, $config);
@@ -31,15 +36,22 @@ class WebSocketController extends BaseNamespace
     #[Event('connect')]
     public function connect(Socket $socket, $data)
     {
-        $user = $this->authenticatableProvider->user();
+        // do nothing
+    }
+
+    #[Event('login')]
+    public function login(Socket $socket, $data)
+    {
+        $user = $this->authManager->tokenGuard()->fromAccessToken($data['access_token']);
 
         if (empty($user)) {
             return;
         }
 
-        if (! $this->redis->hExists(WSAuth::UID_SID, (string) $user->getId())) {
-            $this->redis->hSet(WSAuth::UID_SID, (string) $user->getId(), $socket->getSid());
-        }
+        $sessionId = $this->sessionManager->getSession()->getId();
+
+        $this->redis->hSet(WSAuth::USER_SOCKET, (string) $user->getId(), $socket->getSid());
+        $this->redis->hSet(WSAuth::SOCKET_SESSION, $socket->getSid(), $sessionId);
         $this->redis->hSet(WSAuth::CONNECT_TIMESTAMP, (string) $user->getId(), (string) Carbon::now()->timestamp);
     }
 
@@ -48,10 +60,11 @@ class WebSocketController extends BaseNamespace
     {
         $user = $this->authenticatableProvider->user();
 
+        $this->redis->hDel(WSAuth::SOCKET_SESSION, $socket->getSid());
         if (! empty($user)) {
             $socket->leaveAll();
 
-            $this->redis->hDel(WSAuth::UID_SID, (string) $user->getId());
+            $this->redis->hDel(WSAuth::USER_SOCKET, (string) $user->getId());
             $this->redis->hSet(WSAuth::CONNECT_TIMESTAMP, (string) $user->getId(), (string) Carbon::now()->timestamp);
         }
     }
