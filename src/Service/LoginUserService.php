@@ -12,6 +12,7 @@ use OnixSystemsPHP\HyperfAuth\Contract\AuthenticatableRepository;
 use OnixSystemsPHP\HyperfAuth\Contract\TokenGuard;
 use OnixSystemsPHP\HyperfAuth\DTO\AuthTokensDTO;
 use OnixSystemsPHP\HyperfAuth\DTO\LoginDTO;
+use OnixSystemsPHP\HyperfCore\Constants\ErrorCode;
 use OnixSystemsPHP\HyperfCore\Exception\BusinessException;
 use OnixSystemsPHP\HyperfCore\Service\Service;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -55,17 +56,17 @@ class LoginUserService
     private function validateUser(?Authenticatable $user, LoginDTO $params): void
     {
         if (empty($user)) {
-            throw new BusinessException(422, __('exceptions.login.wrong_password'));
+            throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.wrong_password'));
         }
 
         if (! in_array($user->getRole(), $this->config->get('auth.apps.' . $params->app, []))) {
-            throw new BusinessException(422, __('exceptions.login.wrong_app'));
+            throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.wrong_app'));
         }
         if (! $this->encrypter->check($params->password, $user->getPassword())) {
-            throw new BusinessException(422, __('exceptions.login.wrong_password'));
+            throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.wrong_password'));
         }
         if (empty($user->confirmed)) {
-            throw new BusinessException(422, __('exceptions.login.not_confirmed'));
+            throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.not_confirmed'));
         }
     }
 }

@@ -9,6 +9,7 @@ use Hyperf\Contract\SessionInterface;
 use Hyperf\HttpMessage\Cookie\Cookie;
 use OnixSystemsPHP\HyperfAuth\AuthManager;
 use OnixSystemsPHP\HyperfAuth\SessionManager;
+use OnixSystemsPHP\HyperfCore\Constants\Time;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -43,7 +44,7 @@ class SessionMiddleware implements MiddlewareInterface
         if ($this->config->get('session.options.expire_on_close')) {
             $expirationDate = 0;
         } else {
-            $expireSeconds = $this->config->get('session.options.cookie_lifetime', 5 * 60 * 60);
+            $expireSeconds = $this->config->get('session.options.cookie_lifetime', 5 * Time::HOUR);
             $expirationDate = Carbon::now()->addSeconds($expireSeconds)->getTimestamp();
         }
         return $expirationDate;
@@ -69,7 +70,7 @@ class SessionMiddleware implements MiddlewareInterface
             true
         );
         if (! method_exists($response, 'withCookie')) {
-            return $response->withHeader('Set-Cookie', (string)$cookie);
+            return $response->withHeader('Set-Cookie', (string) $cookie);
         }
         return $response->withCookie($cookie);
     }

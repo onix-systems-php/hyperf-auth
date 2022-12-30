@@ -24,6 +24,9 @@ class ConfigProvider
                     ],
                 ],
             ],
+            'aspect' => [
+                \Hyperf\SocketIOServer\Aspect\SessionAspect::class,
+            ],
             'middlewares' => [
                 'http' => [
                     \OnixSystemsPHP\HyperfAuth\Middleware\SessionMiddleware::class,
