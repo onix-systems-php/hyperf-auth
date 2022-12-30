@@ -13,6 +13,7 @@ use OnixSystemsPHP\HyperfAuth\Contract\TokenGuard;
 use OnixSystemsPHP\HyperfAuth\DTO\AuthTokensDTO;
 use OnixSystemsPHP\HyperfAuth\DTO\LoginDTO;
 use OnixSystemsPHP\HyperfCore\Constants\ErrorCode;
+use OnixSystemsPHP\HyperfCore\Contract\CorePolicyGuard;
 use OnixSystemsPHP\HyperfCore\Exception\BusinessException;
 use OnixSystemsPHP\HyperfCore\Service\Service;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -29,6 +30,7 @@ class LoginUserService
         private AuthenticatableRepository $rUser,
         private EventDispatcherInterface $eventDispatcher,
         private ConfigInterface $config,
+        private ?CorePolicyGuard $policyGuard = null,
     ) {
     }
 
@@ -65,8 +67,6 @@ class LoginUserService
         if (! $this->encrypter->check($params->password, $user->getPassword())) {
             throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.wrong_password'));
         }
-        if (empty($user->confirmed)) {
-            throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.not_confirmed'));
-        }
+        $this->policyGuard?->check('login', $user);
     }
 }

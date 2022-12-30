@@ -5,19 +5,23 @@ namespace OnixSystemsPHP\HyperfAuth\Service;
 
 use Hyperf\DbConnection\Annotation\Transactional;
 use OnixSystemsPHP\HyperfAuth\Repository\UserSocialiteRepository;
+use OnixSystemsPHP\HyperfCore\Contract\CorePolicyGuard;
 use OnixSystemsPHP\HyperfCore\Service\Service;
 
 #[Service]
 class DeleteSocialiteService
 {
-    public function __construct(private UserSocialiteRepository $rUserSocial)
-    {
+    public function __construct(
+        private UserSocialiteRepository $rUserSocial,
+        private ?CorePolicyGuard $policyGuard = null,
+    ) {
     }
 
     #[Transactional(attempts: 1)]
     public function run(string $providerName, int $userId): void
     {
         $social = $this->rUserSocial->getByUserProvider($providerName, $userId, true, true);
+        $this->policyGuard?->check('delete', $social);
         $this->rUserSocial->delete($social);
     }
 }

@@ -18,6 +18,7 @@ use OnixSystemsPHP\HyperfAuth\Guards\JwtGuard;
 use OnixSystemsPHP\HyperfAuth\Repository\UserSocialiteRepository;
 use OnixSystemsPHP\HyperfCore\Constants\ErrorCode;
 use OnixSystemsPHP\HyperfCore\Contract\CoreAuthenticatableProvider;
+use OnixSystemsPHP\HyperfCore\Contract\CorePolicyGuard;
 use OnixSystemsPHP\HyperfCore\Exception\BusinessException;
 use OnixSystemsPHP\HyperfCore\Service\Service;
 use Psr\Container\ContainerInterface;
@@ -37,6 +38,7 @@ class SocialiteHandlerService
         private EventDispatcherInterface $eventDispatcher,
         private ConfigInterface $config,
         private ContainerInterface $container,
+        private ?CorePolicyGuard $policyGuard = null,
     ) {
     }
 
@@ -81,9 +83,10 @@ class SocialiteHandlerService
                 : $this->assignUserToSocialite($user, $providerUser);
         }
 
-        if (! empty($socialiteHandlerDTO->app) && ! in_array($user->role, $rolesToLogin)) {
+        if (! empty($socialiteHandlerDTO->app) && ! in_array($user->getRole(), $rolesToLogin)) {
             throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.wrong_app'));
         }
+        $this->policyGuard?->check('login', $user);
 
         $this->eventDispatcher->dispatch(new Action(self::ACTION, $userSocialite, [], $user));
 
