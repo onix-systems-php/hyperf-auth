@@ -38,7 +38,7 @@ class SocialiteHandlerService
         private EventDispatcherInterface $eventDispatcher,
         private ConfigInterface $config,
         private ContainerInterface $container,
-        private ?CorePolicyGuard $policyGuard = null,
+        private ?CorePolicyGuard $policyGuard,
     ) {
     }
 

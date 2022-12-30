@@ -13,7 +13,7 @@ class DeleteSocialiteService
 {
     public function __construct(
         private UserSocialiteRepository $rUserSocial,
-        private ?CorePolicyGuard $policyGuard = null,
+        private ?CorePolicyGuard $policyGuard,
     ) {
     }
 

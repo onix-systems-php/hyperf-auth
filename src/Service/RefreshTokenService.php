@@ -15,7 +15,7 @@ class RefreshTokenService
 {
     public function __construct(
         private CoreAuthenticatableProvider $authenticatableProvider,
-        private ?CorePolicyGuard $policyGuard = null,
+        private ?CorePolicyGuard $policyGuard,
     ) {
     }
 

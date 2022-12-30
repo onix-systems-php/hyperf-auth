@@ -30,7 +30,7 @@ class LoginUserService
         private AuthenticatableRepository $rUser,
         private EventDispatcherInterface $eventDispatcher,
         private ConfigInterface $config,
-        private ?CorePolicyGuard $policyGuard = null,
+        private ?CorePolicyGuard $policyGuard,
     ) {
     }
 
