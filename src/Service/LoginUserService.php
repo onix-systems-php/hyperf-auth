@@ -68,5 +68,8 @@ class LoginUserService
         if (empty($user->confirmed)) {
             throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.not_confirmed'));
         }
+        if (!is_null($user->deleted_at)) {
+            throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.archived'));
+        }
     }
 }
