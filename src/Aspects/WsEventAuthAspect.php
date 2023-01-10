@@ -15,7 +15,7 @@ use OnixSystemsPHP\HyperfAuth\SessionManager;
 #[Aspect]
 final class WsEventAuthAspect extends AbstractAspect
 {
-    public $annotations = [
+    public array $annotations = [
         Event::class,
     ];
 

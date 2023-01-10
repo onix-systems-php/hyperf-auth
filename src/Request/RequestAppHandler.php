@@ -6,17 +6,17 @@ namespace OnixSystemsPHP\HyperfAuth\Request;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Validation\Request\FormRequest;
 use Hyperf\Validation\Rule;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     schema="RequestAppHandler",
- *     type="object",
- *     @OA\Property(property="provider", type="string", example="google"),
- *     @OA\Property(property="app", type="string", example="admin"),
- *     @OA\Property(property="token", type="string")
- * )
- */
+#[OA\Schema(
+    schema: 'RequestAppHandler',
+    properties: [
+        new OA\Property(property: 'provider', type: 'string', example: 'google'),
+        new OA\Property(property: 'app', type: 'string', example: 'admin', description: 'Requesting app keyname'),
+        new OA\Property(property: 'token', type: 'string'),
+    ],
+    type: 'object',
+)]
 class RequestAppHandler extends FormRequest
 {
     /**

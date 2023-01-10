@@ -16,6 +16,7 @@ use OnixSystemsPHP\HyperfAuth\DTO\SocialiteHandlerDTO;
 use OnixSystemsPHP\HyperfAuth\DTO\UserSocialiteDTO;
 use OnixSystemsPHP\HyperfAuth\Guards\JwtGuard;
 use OnixSystemsPHP\HyperfAuth\Repository\UserSocialiteRepository;
+use OnixSystemsPHP\HyperfAuth\Socialite\AbstractUser;
 use OnixSystemsPHP\HyperfCore\Constants\ErrorCode;
 use OnixSystemsPHP\HyperfCore\Contract\CoreAuthenticatableProvider;
 use OnixSystemsPHP\HyperfCore\Contract\CorePolicyGuard;
@@ -23,7 +24,6 @@ use OnixSystemsPHP\HyperfCore\Exception\BusinessException;
 use OnixSystemsPHP\HyperfCore\Service\Service;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Xtwoend\HySocialite\AbstractUser;
 
 #[Service]
 class SocialiteHandlerService

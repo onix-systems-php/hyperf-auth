@@ -4,17 +4,19 @@ declare(strict_types=1);
 namespace OnixSystemsPHP\HyperfAuth\Resource;
 
 use OnixSystemsPHP\HyperfCore\Resource\AbstractResource;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
 /**
- * @OA\Schema(
- *     schema="ResourceLoginLink",
- *     type="object",
- *     @OA\Property(property="link", type="string"),
- * )
  * @method __construct(string $resource)
  * @property string $resource
  */
+#[OA\Schema(
+    schema: 'ResourceLoginLink',
+    properties: [
+        new OA\Property(property: 'link', type: 'string'),
+    ],
+    type: 'object',
+)]
 class ResourceLoginLink extends AbstractResource
 {
     /**

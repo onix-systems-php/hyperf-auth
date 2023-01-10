@@ -4,16 +4,16 @@ declare(strict_types=1);
 namespace OnixSystemsPHP\HyperfAuth\Request;
 
 use Hyperf\Validation\Request\FormRequest;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     schema="RequestRefresh",
- *     type="object",
- *     @OA\Property(property="access_token", type="string", example="<token>"),
- *     @OA\Property(property="refresh_token", type="string", example="<token>"),
- * )
- */
+#[OA\Schema(
+    schema: 'RequestRefresh',
+    properties: [
+        new OA\Property(property: 'access_token', type: 'string', example: '<token>'),
+        new OA\Property(property: 'refresh_token', type: 'string', example: '<token>'),
+    ],
+    type: 'object',
+)]
 class RequestRefresh extends FormRequest
 {
     /**

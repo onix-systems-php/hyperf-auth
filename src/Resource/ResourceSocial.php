@@ -7,23 +7,25 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Utils\ApplicationContext;
 use OnixSystemsPHP\HyperfAuth\Model\UserSocialite;
 use OnixSystemsPHP\HyperfCore\Resource\AbstractResource;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
 /**
- * @OA\Schema(
- *     schema="ResourceSocial",
- *     type="object",
- *     @OA\Property(property="id", type="integer"),
- *     @OA\Property(property="email", type="string"),
- *     @OA\Property(property="provider_id", type="string"),
- *     @OA\Property(property="provider_name", type="string"),
- *     @OA\Property(property="user", ref="#/components/schemas/ResourceUser"),
- *     @OA\Property(property="created_at", type="string"),
- *     @OA\Property(property="updated_at", type="string"),
- * )
  * @method __construct(UserSocialite $resource)
  * @property UserSocialite $resource
  */
+#[OA\Schema(
+    schema: 'ResourceSocial',
+    properties: [
+        new OA\Property(property: 'id', type: 'integer'),
+        new OA\Property(property: 'email', type: 'string'),
+        new OA\Property(property: 'provider_id', type: 'string'),
+        new OA\Property(property: 'provider_name', type: 'string'),
+        new OA\Property(property: 'user', ref: '#/components/schemas/ResourceUser'),
+        new OA\Property(property: 'created_at', type: 'string'),
+        new OA\Property(property: 'updated_at', type: 'string'),
+    ],
+    type: 'object',
+)]
 class ResourceSocial extends AbstractResource
 {
     /**

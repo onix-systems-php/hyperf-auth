@@ -3,10 +3,10 @@
 declare(strict_types=1);
 namespace OnixSystemsPHP\HyperfAuth\Repository;
 
-use Hyperf\Database\Model\Builder;
 use Hyperf\Utils\Str;
 use OnixSystemsPHP\HyperfAuth\Model\UserSocialite;
 use OnixSystemsPHP\HyperfCore\Model\AbstractModel;
+use OnixSystemsPHP\HyperfCore\Model\Builder;
 use OnixSystemsPHP\HyperfCore\Repository\AbstractRepository;
 
 /**
@@ -15,39 +15,16 @@ use OnixSystemsPHP\HyperfCore\Repository\AbstractRepository;
  * @method UserSocialite save(UserSocialite $model)
  * @method bool delete(UserSocialite $model)
  * @method UserSocialite associate(UserSocialite $model, string $relation, AbstractModel $related)
+ * @method Builder|UserSocialiteRepository finder(string $type, ...$parameters)
+ * @method null|UserSocialite fetchOne(bool $lock, bool $force)
  */
 class UserSocialiteRepository extends AbstractRepository
 {
     protected string $modelClass = UserSocialite::class;
 
-    // -----
-
     public function getByEmail(string $email, bool $lock = false, bool $force = false): ?UserSocialite
     {
-        return $this->fetchOne($this->queryByEmail($email), $lock, $force);
-    }
-
-    public function queryByEmail(string $email): Builder
-    {
-        return $this->query()->whereRaw('LOWER(email) = ? ', Str::lower($email));
-    }
-
-    // -----
-
-    public function getById(int $id, bool $lock = false, bool $force = false): ?UserSocialite
-    {
-        return $this->fetchOne($this->queryById($id), $lock, $force);
-    }
-
-    public function queryById(int $id): Builder
-    {
-        return $this->query()->where('id', $id);
-    }
-
-    // -----
-    public function isExists(string $providerId, bool $lock = false, bool $force = false): bool
-    {
-        return $this->fetchOne($this->queryByProviderId($providerId), $lock, $force) !== null;
+        return $this->finder('email', $email)->fetchOne($lock, $force);
     }
 
     public function getByProviderData(
@@ -56,7 +33,7 @@ class UserSocialiteRepository extends AbstractRepository
         bool $lock = false,
         bool $force = false
     ): ?UserSocialite {
-        return $this->fetchOne($this->queryByProviderData($provider, $providerId), $lock, $force);
+        return $this->finder('providerName', $provider)->finder('providerId', $providerId)->fetchOne($lock, $force);
     }
 
     public function getByUserProvider(
@@ -65,48 +42,31 @@ class UserSocialiteRepository extends AbstractRepository
         bool $lock = false,
         bool $force = false
     ): ?UserSocialite {
-        return $this->fetchOne($this->queryByUserProvider($providerName, $userId), $lock, $force);
+        return $this->finder('providerName', $providerName)->finder('userId', $userId)->fetchOne($lock, $force);
     }
 
-    public function getByProviderName(string $providerName, bool $lock = false, bool $force = false): ?UserSocialite
+    public function scopeId(Builder $query, int $id): void
     {
-        return $this->fetchOne($this->queryByProviderName($providerName), $lock, $force);
+        $query->where('id', '=', $id);
     }
 
-    public function getByUserId(int $userId, bool $lock = false, bool $force = false): ?UserSocialite
+    public function scopeEmail(Builder $query, string $email): void
     {
-        return $this->fetchOne($this->queryByUserId($userId), $lock, $force);
+        $query->whereRaw('LOWER(email) = ? ', Str::lower($email));
     }
 
-    public function queryByProviderId(string $providerId): ?Builder
+    public function scopeProviderId(Builder $query, string $providerId): void
     {
-        return $this->query()->where('provider_id', $providerId);
+        $query->where('provider_id', '=', $providerId);
     }
 
-    public function queryByProviderName(string $providerName): ?Builder
+    public function scopeProviderName(Builder $query, string $providerName): void
     {
-        return $this->query()->where('provider_name', $providerName);
+        $query->where('provider_name', '=', $providerName);
     }
 
-    public function queryByUserId(int $userId): ?Builder
+    public function scopeUserId(Builder $query, int $userId): void
     {
-        return $this->query()->where('user_id', $userId);
-    }
-
-    public function queryByProviderData(string $provider, string $providerId): ?Builder
-    {
-        return $this->query()->where(['provider_id' => $providerId, 'provider_name' => $provider]);
-    }
-
-    public function queryByUserProvider(string $providerName, int $userId): ?Builder
-    {
-        return $this->query()->where(['provider_name' => $providerName, 'user_id' => $userId]);
-    }
-
-    protected function fetchOne(Builder $builder, bool $lock, bool $force): ?UserSocialite
-    {
-        /** @var ?UserSocialite $result */
-        $result = parent::fetchOne($builder, $lock, $force);
-        return $result;
+        $query->where('user_id', '=', $userId);
     }
 }

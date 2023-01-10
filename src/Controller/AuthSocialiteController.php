@@ -15,7 +15,7 @@ use OnixSystemsPHP\HyperfAuth\Service\SocialiteHandlerService;
 use OnixSystemsPHP\HyperfCore\Contract\CoreAuthenticatableProvider;
 use OnixSystemsPHP\HyperfCore\Controller\AbstractController;
 use OnixSystemsPHP\HyperfCore\Resource\ResourceSuccess;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
 class AuthSocialiteController extends AbstractController
 {
@@ -25,48 +25,53 @@ class AuthSocialiteController extends AbstractController
     ) {
     }
 
-    /**
-     * @OA\Get(
-     *     path="/v1/auth-socialite/{provider}/{app}/login",
-     *     summary="Generate redirect url",
-     *     operationId="redirectLoginAuthSocialite",
-     *     tags={"auth_socialite"},
-     *     @OA\Parameter(ref="#/components/parameters/Locale"),
-     *     @OA\Parameter(name="provider", in="path", required=true, @OA\Schema(type="string"), description="Social provider"),
-     *     @OA\Parameter(name="app", in="path", required=true, @OA\Schema(type="string"), description="Requesting app keyname"),
-     *     @OA\Response(response=200, description="", @OA\JsonContent(
-     *         @OA\Property(property="status", type="string"),
-     *         @OA\Property(property="data", ref="#/components/schemas/ResourceLoginLink"),
-     *     )),
-     *     @OA\Response(response=401, ref="#/components/responses/401"),
-     *     @OA\Response(response=422, ref="#/components/responses/422"),
-     *     @OA\Response(response=500, ref="#/components/responses/500"),
-     * )
-     */
+
+    #[OA\Get(
+        path: '/v1/auth-socialite/{provider}/{app}/login',
+        operationId: 'redirectLoginAuthSocialite',
+        summary: 'Generate redirect url',
+        tags: ['auth_socialite'],
+        parameters: [
+            new OA\Parameter(ref: '#/components/parameters/Locale'),
+            new OA\Parameter(name: 'provider', in: 'path', required: true, schema: new OA\Schema(type: 'string'), description: 'Social provider'),
+            new OA\Parameter(name: 'app', in: 'path', required: true, schema: new OA\Schema(type: 'string'), description: 'Requesting app keyname'),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: '', content: new OA\JsonContent(properties: [
+                new OA\Property(property: 'status', type: 'string'),
+                new OA\Property(property: 'data', ref: '#/components/schemas/ResourceLoginLink'),
+            ])),
+            new OA\Response(response: 401, ref: '#/components/responses/401'),
+            new OA\Response(response: 422, ref: '#/components/responses/422'),
+            new OA\Response(response: 500, ref: '#/components/responses/500'),
+        ],
+    )]
     public function getLoginLink(RequestProviders $request, GetSocialiteLoginLinkService $redirectService): ResourceLoginLink
     {
         return new ResourceLoginLink($redirectService->run($request->all()['provider'], $request->all()['app']));
     }
 
-    /**
-     * @OA\Get(
-     *     path="/v1/auth-socialite/{provider}/{app}/handler",
-     *     summary="Login from web.",
-     *     operationId="webHandlerAuthSocialite",
-     *     tags={"auth_socialite"},
-     *     @OA\Parameter(ref="#/components/parameters/Locale"),
-     *     @OA\Parameter(name="provider", in="path", required=true, @OA\Schema(type="string"), description="Social provider"),
-     *     @OA\Parameter(name="app", in="path", required=true, @OA\Schema(type="string"), description="Requesting app keyname"),
-     *     @OA\Parameter(name="code", in="query", @OA\Schema(type="string"), description="OAuth code"),
-     *     @OA\Response(response=200, description="", @OA\JsonContent(
-     *         @OA\Property(property="status", type="string"),
-     *         @OA\Property(property="data", ref="#/components/schemas/ResourceAuthToken"),
-     *     )),
-     *     @OA\Response(response=401, ref="#/components/responses/404"),
-     *     @OA\Response(response=422, ref="#/components/responses/422"),
-     *     @OA\Response(response=500, ref="#/components/responses/500"),
-     * )
-     */
+    #[OA\Get(
+        path: '/v1/auth-socialite/{provider}/{app}/handler',
+        operationId: 'webHandlerAuthSocialite',
+        summary: 'Login from web.',
+        tags: ['auth_socialite'],
+        parameters: [
+            new OA\Parameter(ref: '#/components/parameters/Locale'),
+            new OA\Parameter(name: 'provider', in: 'path', required: true, schema: new OA\Schema(type: 'string'), description: 'Social provider'),
+            new OA\Parameter(name: 'app', in: 'path', required: true, schema: new OA\Schema(type: 'string'), description: 'Requesting app keyname'),
+            new OA\Parameter(name: 'code', in: 'query', schema: new OA\Schema(type: 'string'), description: 'OAuth code'),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: '', content: new OA\JsonContent(properties: [
+                new OA\Property(property: 'status', type: 'string'),
+                new OA\Property(property: 'data', ref: '#/components/schemas/ResourceAuthToken'),
+            ])),
+            new OA\Response(response: 401, ref: '#/components/responses/404'),
+            new OA\Response(response: 422, ref: '#/components/responses/422'),
+            new OA\Response(response: 500, ref: '#/components/responses/500'),
+        ],
+    )]
     public function webHandler(
         RequestProviders $request,
         SocialiteHandlerService $handlerService
@@ -84,23 +89,25 @@ class AuthSocialiteController extends AbstractController
         return ResourceAuthToken::make($tokens);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/v1/auth-socialite/app/handler",
-     *     summary="Login from app.",
-     *     operationId="appHandlerAuthSocialite",
-     *     tags={"auth_socialite"},
-     *     @OA\Parameter(ref="#/components/parameters/Locale"),
-     *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/RequestAppHandler")),
-     *     @OA\Response(response=200, description="", @OA\JsonContent(
-     *         @OA\Property(property="status", type="string"),
-     *         @OA\Property(property="data", ref="#/components/schemas/ResourceAuthToken"),
-     *     )),
-     *     @OA\Response(response=401, ref="#/components/responses/404"),
-     *     @OA\Response(response=422, ref="#/components/responses/422"),
-     *     @OA\Response(response=500, ref="#/components/responses/500"),
-     * )
-     */
+    #[OA\Post(
+        path: '/v1/auth-socialite/app/handler',
+        operationId: 'appHandlerAuthSocialite',
+        summary: 'Login from app.',
+        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: '#/components/schemas/RequestAppHandler')),
+        tags: ['auth_socialite'],
+        parameters: [
+            new OA\Parameter(ref: '#/components/parameters/Locale'),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: '', content: new OA\JsonContent(properties: [
+                new OA\Property(property: 'status', type: 'string'),
+                new OA\Property(property: 'data', ref: '#/components/schemas/ResourceAuthToken'),
+            ])),
+            new OA\Response(response: 401, ref: '#/components/responses/404'),
+            new OA\Response(response: 422, ref: '#/components/responses/422'),
+            new OA\Response(response: 500, ref: '#/components/responses/500'),
+        ],
+    )]
     public function appHandler(
         RequestAppHandler $request,
         SocialiteHandlerService $handlerService
@@ -112,23 +119,25 @@ class AuthSocialiteController extends AbstractController
         return ResourceAuthToken::make($tokens);
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/v1/auth-socialite/{provider}",
-     *     summary="Delete social connection by provider.",
-     *     operationId="deleteSocialConnection",
-     *     tags={"auth_socialite"},
-     *     security={{"bearerAuth": {}}},
-     *     @OA\Parameter(ref="#/components/parameters/Locale"),
-     *     @OA\Parameter(name="provider", in="path", required=true, @OA\Schema(type="string"), description="Social provider"),
-     *     @OA\Response(response=200, description="", @OA\JsonContent(
-     *         @OA\Property(property="status", type="string"),
-     *         @OA\Property(property="data", ref="#/components/schemas/ResourceSuccess"),
-     *     )),
-     *     @OA\Response(response=401, ref="#/components/responses/401"),
-     *     @OA\Response(response=500, ref="#/components/responses/500"),
-     * )
-     */
+    #[OA\Delete(
+        path: '/v1/auth-socialite/{provider}',
+        operationId: 'deleteSocialConnection',
+        summary: 'Delete social connection by provider.',
+        security: [['bearerAuth' => []]],
+        tags: ['auth_socialite'],
+        parameters: [
+            new OA\Parameter(ref: '#/components/parameters/Locale'),
+            new OA\Parameter(name: 'provider', in: 'path', required: true, schema: new OA\Schema(type: 'string'), description: 'Social provider'),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: '', content: new OA\JsonContent(properties: [
+                new OA\Property(property: 'status', type: 'string'),
+                new OA\Property(property: 'data', ref: '#/components/schemas/ResourceSuccess'),
+            ])),
+            new OA\Response(response: 401, ref: '#/components/responses/404'),
+            new OA\Response(response: 500, ref: '#/components/responses/500'),
+        ],
+    )]
     public function deleteSocialProvider(
         string $provider,
         DeleteSocialiteService $service

@@ -16,13 +16,13 @@ use OnixSystemsPHP\HyperfCore\Model\AbstractOwnedModel;
  */
 class UserSocialite extends AbstractOwnedModel
 {
-    protected $table = 'user_socialites';
+    protected ?string $table = 'user_socialites';
 
-    protected $fillable = [
+    protected array $fillable = [
         'user_id', 'provider_name', 'provider_id', 'email',
     ];
 
-    protected $casts = [
+    protected array $casts = [
         'id' => 'integer',
         'email' => 'string',
         'provider_id' => 'string',

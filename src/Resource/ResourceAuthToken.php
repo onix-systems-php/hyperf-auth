@@ -5,18 +5,20 @@ namespace OnixSystemsPHP\HyperfAuth\Resource;
 
 use OnixSystemsPHP\HyperfAuth\DTO\AuthTokensDTO;
 use OnixSystemsPHP\HyperfCore\Resource\AbstractResource;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
 /**
- * @OA\Schema(
- *     schema="ResourceAuthToken",
- *     type="object",
- *     @OA\Property(property="access_token", type="string"),
- *     @OA\Property(property="refresh_token", type="string"),
- * )
  * @method __construct(AuthTokensDTO $resource)
  * @property AuthTokensDTO $resource
  */
+#[OA\Schema(
+    schema: 'ResourceAuthToken',
+    properties: [
+        new OA\Property(property: 'access_token', type: 'string'),
+        new OA\Property(property: 'refresh_token', type: 'string'),
+    ],
+    type: 'object',
+)]
 class ResourceAuthToken extends AbstractResource
 {
     /**

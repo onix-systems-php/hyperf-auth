@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace OnixSystemsPHP\HyperfAuth\Service;
 
 use Hyperf\Contract\ConfigInterface;
+use OnixSystemsPHP\HyperfAuth\Socialite\Facades\Socialite;
+use OnixSystemsPHP\HyperfAuth\Socialite\Two\AbstractProvider;
 use OnixSystemsPHP\HyperfCore\Service\Service;
-use Xtwoend\HySocialite\Facades\Socialite;
-use Xtwoend\HySocialite\Two\AbstractProvider;
 
 #[Service]
 class PrepareSocialiteProviderService
