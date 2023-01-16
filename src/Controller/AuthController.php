@@ -82,7 +82,7 @@ class AuthController extends AbstractController
             new OA\Parameter(ref: '#/components/parameters/Locale'),
         ],
         responses: [
-            new OA\Response(response: 200, description: '', content: new OA\JsonContent(parameters: [
+            new OA\Response(response: 200, description: '', content: new OA\JsonContent(properties: [
                 new OA\Property(property: 'status', type: 'string'),
                 new OA\Property(property: 'data', ref: '#/components/schemas/ResourceAuthToken'),
             ])),
