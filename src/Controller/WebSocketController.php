@@ -21,10 +21,10 @@ class WebSocketController extends BaseNamespace
     public function __construct(
         Sender $sender,
         SidProviderInterface $sidProvider,
-        ?SocketIOConfig $config = null,
         protected AuthManager $authManager,
         protected SessionManager $sessionManager,
         protected Redis $redis,
+        ?SocketIOConfig $config = null,
     ) {
         parent::__construct($sender, $sidProvider, $config);
     }
