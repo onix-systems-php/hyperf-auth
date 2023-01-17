@@ -67,7 +67,6 @@ class SocialiteHandlerService
             $socialiteHandlerDTO->provider,
             $providerUser->provider_id
         );
-        $isJustAssigned = false;
         $sessionUser = $this->authenticatableProvider->user();
 
         if (! empty($userSocialite)) {
@@ -76,7 +75,6 @@ class SocialiteHandlerService
                 throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.oauth.account_already_assigned'));
             }
         } else {
-            $isJustAssigned = true;
             $user = ! empty($sessionUser) ? $sessionUser : $this->rUser->getByEmail($providerUser->email);
             $user = empty($user)
                 ? $this->createUserFromSocialite($providerUser, $defaultRole)
@@ -90,11 +88,7 @@ class SocialiteHandlerService
 
         $this->eventDispatcher->dispatch(new Action(self::ACTION, $userSocialite, [], $user));
 
-        $tokens = $jwtGuard->login($user);
-        if ($isJustAssigned && ! empty($providerUser->avatar_url)) {
-            $this->assignSocialAvatar($user, $providerUser);
-        }
-        return $tokens;
+        return $jwtGuard->login($user);
     }
 
     private function createUserFromSocialite(UserSocialiteDTO $userSocialiteDTO, ?string $role): Authenticatable
@@ -113,6 +107,10 @@ class SocialiteHandlerService
         }
 
         $user = $createUserService->run($userSocialiteDTO, $role);
+
+        if (!empty($userSocialiteDTO->avatar_url)) {
+            $this->assignSocialAvatar($user, $userSocialiteDTO);
+        }
 
         return $this->assignUserToSocialite($user, $userSocialiteDTO);
     }
