@@ -17,30 +17,30 @@ abstract class AbstractUser implements \ArrayAccess, User
     /**
      * The user's nickname / username.
      *
-     * @var string
+     * @var string|null
      */
-    public string $nickname;
+    public ?string $nickname;
 
     /**
      * The user's full name.
      *
-     * @var string
+     * @var string|null
      */
-    public string $name;
+    public ?string $name;
 
     /**
      * The user's e-mail address.
      *
-     * @var string
+     * @var string|null
      */
-    public string $email;
+    public ?string $email;
 
     /**
      * The user's avatar image URL.
      *
-     * @var string
+     * @var string|null
      */
-    public string $avatar;
+    public ?string $avatar;
 
     /**
      * The user's raw attributes.
@@ -66,7 +66,7 @@ abstract class AbstractUser implements \ArrayAccess, User
      */
     public function getNickname(): string
     {
-        return $this->nickname;
+        return is_null($this->nickname) ? '' : $this->nickname;
     }
 
     /**
@@ -76,7 +76,7 @@ abstract class AbstractUser implements \ArrayAccess, User
      */
     public function getName(): string
     {
-        return $this->name;
+        return is_null($this->name) ? '' : $this->name;
     }
 
     /**
@@ -86,7 +86,7 @@ abstract class AbstractUser implements \ArrayAccess, User
      */
     public function getEmail(): string
     {
-        return $this->email;
+        return is_null($this->email) ? '' : $this->email;
     }
 
     /**
@@ -96,7 +96,7 @@ abstract class AbstractUser implements \ArrayAccess, User
      */
     public function getAvatar(): string
     {
-        return $this->avatar;
+        return is_null($this->avatar) ? '' : $this->avatar;
     }
 
     /**
