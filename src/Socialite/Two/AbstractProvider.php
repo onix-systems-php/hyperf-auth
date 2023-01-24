@@ -110,7 +110,7 @@ abstract class AbstractProvider implements ProviderContract
      *
      * @var \OnixSystemsPHP\HyperfAuth\Socialite\Two\User|null
      */
-    protected ?User $user;
+    protected ?User $user = null;
 
     /**
      * Create a new provider instance.
