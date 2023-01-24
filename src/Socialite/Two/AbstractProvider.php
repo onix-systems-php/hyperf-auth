@@ -31,9 +31,9 @@ abstract class AbstractProvider implements ProviderContract
     /**
      * The HTTP Client instance.
      *
-     * @var \GuzzleHttp\Client
+     * @var \GuzzleHttp\Client|null
      */
-    protected Client $httpClient;
+    protected ?Client $httpClient = null;
 
     /**
      * The client ID.
