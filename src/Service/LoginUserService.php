@@ -64,7 +64,7 @@ class LoginUserService
         if (! in_array($user->getRole(), $this->config->get('auth.apps.' . $params->app, []))) {
             throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.wrong_app'));
         }
-        if (! $this->encrypter->check($params->password, $user->getPassword())) {
+        if (! $this->encrypter->check($params->password, $user->getPassword() ?? '')) {
             throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.login.wrong_password'));
         }
         $this->policyGuard?->check('login', $user);

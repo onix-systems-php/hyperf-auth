@@ -7,5 +7,5 @@ use OnixSystemsPHP\HyperfCore\Contract\CoreAuthenticatable;
 
 interface Authenticatable extends CoreAuthenticatable, \Qbhy\HyperfAuth\Authenticatable
 {
-    public function getPassword(): string;
+    public function getPassword(): ?string;
 }
