@@ -19,7 +19,7 @@ class User extends AbstractUser
     /**
      * The number of seconds the access token is valid for.
      */
-    public int $expiresIn;
+    public ?int $expiresIn;
 
     /**
      * Set the token on the user.
@@ -50,10 +50,10 @@ class User extends AbstractUser
     /**
      * Set the number of seconds the access token is valid for.
      *
-     * @param  int $expiresIn
+     * @param  int|null $expiresIn
      * @return $this
      */
-    public function setExpiresIn(int $expiresIn): self
+    public function setExpiresIn(?int $expiresIn): self
     {
         $this->expiresIn = $expiresIn;
 
