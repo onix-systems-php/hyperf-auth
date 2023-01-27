@@ -26,7 +26,10 @@ class SessionMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $this->authManager->user();
+        if (!str_contains($request->getUri()->getPath(), 'auth/refresh')) {
+            $this->authManager->user();
+        }
+
         $session = $this->sessionManager->isSessionStarted()
             ? $this->sessionManager->getSession()
             : $this->sessionManager->start($request);
