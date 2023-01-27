@@ -80,6 +80,8 @@ class JwtGuard extends AbstractAuthGuard implements TokenGuard
         try {
             $accessToken = $this->getAccessToken();
             return $this->parseUser($accessToken);
+        } catch (TokenExpiredException $exception) {
+            throw new TokenExpiredException(__('exceptions.auth.session_expired'));
         } catch (\Throwable $exception) {
             return null;
         }
