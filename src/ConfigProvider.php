@@ -28,11 +28,6 @@ class ConfigProvider
             'aspects' => [
                 \OnixSystemsPHP\HyperfAuth\Aspects\WsEventAuthAspect::class,
             ],
-            'middlewares' => [
-                'http' => [
-                    \OnixSystemsPHP\HyperfAuth\Middleware\SessionMiddleware::class,
-                ],
-            ],
             'publish' => [
                 [
                     'id' => 'config_auth',
