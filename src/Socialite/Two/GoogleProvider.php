@@ -69,7 +69,7 @@ class GoogleProvider extends AbstractProvider implements ProviderInterface
         $user['link'] = Arr::get($user, 'profile');
 
         return (new User)->setRaw($user)->map([
-            'id' => Arr::get($user, 'sub'),
+            'id' => (string) Arr::get($user, 'sub'),
             'nickname' => Arr::get($user, 'nickname'),
             'name' => Arr::get($user, 'name'),
             'email' => Arr::get($user, 'email'),

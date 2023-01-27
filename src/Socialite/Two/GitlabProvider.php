@@ -76,7 +76,7 @@ class GitlabProvider extends AbstractProvider implements ProviderInterface
     protected function mapUserToObject(array $user): User
     {
         return (new User)->setRaw($user)->map([
-            'id' => $user['id'],
+            'id' => (string) $user['id'],
             'nickname' => $user['username'],
             'name' => $user['name'],
             'email' => $user['email'],
