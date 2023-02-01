@@ -28,7 +28,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 #[Service]
 class SocialiteHandlerService
 {
-    public const ACTION = 'handler_auth_socialite';
+    public const ACTION = 'login';
 
     public function __construct(
         private UserSocialiteRepository $rUserSocialite,
@@ -86,7 +86,8 @@ class SocialiteHandlerService
         }
         $this->policyGuard?->check('login', $user);
 
-        $this->eventDispatcher->dispatch(new Action(self::ACTION, $userSocialite, $userSocialite?->toArray() ?? [], $user));
+        $logsData = ['provider' => $userSocialite?->provider_name];
+        $this->eventDispatcher->dispatch(new Action(self::ACTION, $userSocialite, $logsData, $user));
 
         return $jwtGuard->login($user);
     }
