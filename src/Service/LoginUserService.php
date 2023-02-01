@@ -41,7 +41,7 @@ class LoginUserService
         $user = $this->rUser->getByLogin($params->login);
         $this->validateUser($user, $params);
         $authTokensDTO = $jwtGuard->login($user);
-        $this->eventDispatcher->dispatch(new Action(self::ACTION, $user, [], $user));
+        $this->eventDispatcher->dispatch(new Action(self::ACTION, $user, ['provider' => 'login:password'], $user));
         return $authTokensDTO;
     }
 
