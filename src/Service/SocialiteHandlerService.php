@@ -86,7 +86,7 @@ class SocialiteHandlerService
         }
         $this->policyGuard?->check('login', $user);
 
-        $this->eventDispatcher->dispatch(new Action(self::ACTION, $userSocialite, [], $user));
+        $this->eventDispatcher->dispatch(new Action(self::ACTION, $userSocialite, $userSocialite?->toArray() ?? [], $user));
 
         return $jwtGuard->login($user);
     }
