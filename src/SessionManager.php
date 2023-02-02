@@ -3,10 +3,10 @@
 declare(strict_types=1);
 namespace OnixSystemsPHP\HyperfAuth;
 
-use App\Model\User;
 use Hyperf\Context\Context;
 use Hyperf\Contract\SessionInterface;
 use Hyperf\Session\SessionManager as BaseSessionManager;
+use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
 use OnixSystemsPHP\HyperfAuth\Contract\AuthenticatableProvider;
 use Psr\Http\Message\ServerRequestInterface;
 use Qbhy\HyperfAuth\Exception\UnauthorizedException;
@@ -34,7 +34,7 @@ class SessionManager extends BaseSessionManager implements AuthenticatableProvid
         return (bool) Context::get(SessionInterface::class)?->isStarted();
     }
 
-    public function user(): User|null
+    public function user(): Authenticatable|null
     {
         if ($this->isSessionStarted()) {
             return $this->getSession()->get('user');
