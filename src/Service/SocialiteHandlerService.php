@@ -6,6 +6,7 @@ namespace OnixSystemsPHP\HyperfAuth\Service;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\DbConnection\Annotation\Transactional;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use JetBrains\PhpStorm\ArrayShape;
 use OnixSystemsPHP\HyperfActionsLog\Event\Action;
 use OnixSystemsPHP\HyperfAuth\Contract\AssignSocialiteAvatarService;
 use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
@@ -29,8 +30,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 class SocialiteHandlerService
 {
     public const ACTION_LOGIN = 'login';
-    public const ACTION_CONNECT = 'connect';
-    public const ACTION_CREATE = 'create_user';
+    public const ACTION_CONNECT = 'connect_social';
 
     public function __construct(
         private UserSocialiteRepository $rUserSocialite,
@@ -70,18 +70,23 @@ class SocialiteHandlerService
             $providerUser->provider_id
         );
         $sessionUser = $this->authenticatableProvider->user();
-        $action = ! empty($sessionUser) ? self::ACTION_CONNECT : self::ACTION_LOGIN;
-        
+        $logsData = ['provider' => $socialiteHandlerDTO->provider ?? null];
+
         if (! empty($userSocialite)) {
             $user = $userSocialite->user;
-            if (! empty($sessionUser) && $user->id != $sessionUser->getId()) {
+            if (! empty($sessionUser) && $user->getId() != $sessionUser->getId()) {
                 throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.oauth.account_already_assigned'));
             }
         } else {
             $user = ! empty($sessionUser) ? $sessionUser : $this->rUser->getByEmail($providerUser->email);
-            $user = empty($user)
-                ? $this->createUserFromSocialite($providerUser, $defaultRole)
-                : $this->assignUserToSocialite($user, $providerUser);
+            if (empty($user)) {
+                $data = $this->createUserFromSocialite($providerUser, $defaultRole);
+            } else {
+                $data = $this->assignUserToSocialite($user, $providerUser);
+            }
+            $user = $data['user'];
+            $userSocialite = $data['socialite'];
+            $this->eventDispatcher->dispatch(new Action(self::ACTION_CONNECT, $userSocialite, $logsData, $user));
         }
 
         if (! empty($socialiteHandlerDTO->app) && ! in_array($user->getRole(), $rolesToLogin)) {
@@ -89,13 +94,16 @@ class SocialiteHandlerService
         }
         $this->policyGuard?->check('login', $user);
 
-        $logsData = ['provider' => $socialiteHandlerDTO->provider ?? null];
-        $this->eventDispatcher->dispatch(new Action($action, $userSocialite, $logsData, $user));
+        if (empty($sessionUser)) {
+            $this->eventDispatcher->dispatch(new Action(self::ACTION_LOGIN, $userSocialite, $logsData, $user));
+        }
 
         return $jwtGuard->login($user);
     }
 
-    private function createUserFromSocialite(UserSocialiteDTO $userSocialiteDTO, ?string $role): Authenticatable
+    #[ArrayShape(['user'      => '\OnixSystemsPHP\HyperfAuth\Contract\Authenticatable',
+                  'socialite' => '\OnixSystemsPHP\HyperfAuth\Model\UserSocialite'])]
+    private function createUserFromSocialite(UserSocialiteDTO $userSocialiteDTO, ?string $role): array
     {
         if (empty($role)) {
             throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.oauth.sign_up_disabled'));
@@ -116,18 +124,18 @@ class SocialiteHandlerService
             $this->assignSocialAvatar($user, $userSocialiteDTO);
         }
 
-        $this->eventDispatcher->dispatch(new Action(self::ACTION_CREATE, $user, $user->toArray(), $user));
-
         return $this->assignUserToSocialite($user, $userSocialiteDTO);
     }
 
-    private function assignUserToSocialite(Authenticatable $user, UserSocialiteDTO $userSocialiteDTO): Authenticatable
+    #[ArrayShape(['user'      => '\OnixSystemsPHP\HyperfAuth\Contract\Authenticatable',
+                  'socialite' => '\OnixSystemsPHP\HyperfAuth\Model\UserSocialite'])]
+    private function assignUserToSocialite(Authenticatable $user, UserSocialiteDTO $userSocialiteDTO): array
     {
         $userSocialite = $this->rUserSocialite->create($userSocialiteDTO->toArray());
         $this->rUserSocialite->associate($userSocialite, 'user', $user);
         $this->rUserSocialite->save($userSocialite);
 
-        return $user;
+        return ['user' => $user, 'socialite' => $userSocialite];
     }
 
     private function makeUserSocialiteDto(AbstractUser $user, string $provider): UserSocialiteDTO
