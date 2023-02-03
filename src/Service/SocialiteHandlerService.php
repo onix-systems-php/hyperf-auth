@@ -28,7 +28,9 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 #[Service]
 class SocialiteHandlerService
 {
-    public const ACTION = 'login';
+    public const ACTION_LOGIN = 'login';
+    public const ACTION_CONNECT = 'connect';
+    public const ACTION_CREATE = 'create_user';
 
     public function __construct(
         private UserSocialiteRepository $rUserSocialite,
@@ -68,7 +70,8 @@ class SocialiteHandlerService
             $providerUser->provider_id
         );
         $sessionUser = $this->authenticatableProvider->user();
-
+        $action = ! empty($sessionUser) ? self::ACTION_CONNECT : self::ACTION_LOGIN;
+        
         if (! empty($userSocialite)) {
             $user = $userSocialite->user;
             if (! empty($sessionUser) && $user->id != $sessionUser->getId()) {
@@ -86,8 +89,8 @@ class SocialiteHandlerService
         }
         $this->policyGuard?->check('login', $user);
 
-        $logsData = ['provider' => $userSocialite?->provider_name];
-        $this->eventDispatcher->dispatch(new Action(self::ACTION, $userSocialite, $logsData, $user));
+        $logsData = ['provider' => $socialiteHandlerDTO->provider ?? null];
+        $this->eventDispatcher->dispatch(new Action($action, $userSocialite, $logsData, $user));
 
         return $jwtGuard->login($user);
     }
@@ -112,6 +115,8 @@ class SocialiteHandlerService
         if (!empty($userSocialiteDTO->avatar_url)) {
             $this->assignSocialAvatar($user, $userSocialiteDTO);
         }
+
+        $this->eventDispatcher->dispatch(new Action(self::ACTION_CREATE, $user, $user->toArray(), $user));
 
         return $this->assignUserToSocialite($user, $userSocialiteDTO);
     }
