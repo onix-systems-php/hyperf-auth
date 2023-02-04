@@ -6,7 +6,6 @@ namespace OnixSystemsPHP\HyperfAuth\Service;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\DbConnection\Annotation\Transactional;
 use Hyperf\HttpServer\Contract\RequestInterface;
-use JetBrains\PhpStorm\ArrayShape;
 use OnixSystemsPHP\HyperfActionsLog\Event\Action;
 use OnixSystemsPHP\HyperfAuth\Contract\AssignSocialiteAvatarService;
 use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
@@ -79,13 +78,9 @@ class SocialiteHandlerService
             }
         } else {
             $user = ! empty($sessionUser) ? $sessionUser : $this->rUser->getByEmail($providerUser->email);
-            if (empty($user)) {
-                $data = $this->createUserFromSocialite($providerUser, $defaultRole);
-            } else {
-                $data = $this->assignUserToSocialite($user, $providerUser);
-            }
-            $user = $data['user'];
-            $userSocialite = $data['socialite'];
+            [$user, $userSocialite] = empty($user)
+                ? $this->createUserFromSocialite($providerUser, $defaultRole)
+                : $this->assignUserToSocialite($user, $providerUser);
             $this->eventDispatcher->dispatch(new Action(self::ACTION_CONNECT, $userSocialite, $logsData, $user));
         }
 
@@ -101,8 +96,6 @@ class SocialiteHandlerService
         return $jwtGuard->login($user);
     }
 
-    #[ArrayShape(['user'      => '\OnixSystemsPHP\HyperfAuth\Contract\Authenticatable',
-                  'socialite' => '\OnixSystemsPHP\HyperfAuth\Model\UserSocialite'])]
     private function createUserFromSocialite(UserSocialiteDTO $userSocialiteDTO, ?string $role): array
     {
         if (empty($role)) {
@@ -127,15 +120,13 @@ class SocialiteHandlerService
         return $this->assignUserToSocialite($user, $userSocialiteDTO);
     }
 
-    #[ArrayShape(['user'      => '\OnixSystemsPHP\HyperfAuth\Contract\Authenticatable',
-                  'socialite' => '\OnixSystemsPHP\HyperfAuth\Model\UserSocialite'])]
     private function assignUserToSocialite(Authenticatable $user, UserSocialiteDTO $userSocialiteDTO): array
     {
         $userSocialite = $this->rUserSocialite->create($userSocialiteDTO->toArray());
         $this->rUserSocialite->associate($userSocialite, 'user', $user);
         $this->rUserSocialite->save($userSocialite);
 
-        return ['user' => $user, 'socialite' => $userSocialite];
+        return [$user, $userSocialite];
     }
 
     private function makeUserSocialiteDto(AbstractUser $user, string $provider): UserSocialiteDTO
