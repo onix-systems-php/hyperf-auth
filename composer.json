@@ -23,6 +23,7 @@
         "ext-openssl": "*",
         "96qbhy/hyperf-auth": "^3.0",
         "onix-systems-php/hyperf-actions-log": ">=1.1",
+        "onix-systems-php/hyperf-socialite": "^1.1",
         "onix-systems-php/hyperf-core": ">=1.1",
         "hyperf/contract": "^3.0",
         "hyperf/guzzle": "^3.0",

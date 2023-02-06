@@ -14,7 +14,6 @@ class ConfigProvider
                 \OnixSystemsPHP\HyperfAuth\Contract\TokenGuardProvider::class => \OnixSystemsPHP\HyperfAuth\AuthManager::class,
                 \Qbhy\SimpleJwt\Interfaces\Encrypter::class => \OnixSystemsPHP\HyperfAuth\Hashers\PasswordHashEncrypterFactory::class,
                 \OnixSystemsPHP\HyperfAuth\Contract\AuthenticatableRepository::class => \App\Repository\UserRepository::class,
-                \OnixSystemsPHP\HyperfAuth\Socialite\Contracts\Factory::class => \OnixSystemsPHP\HyperfAuth\Socialite\SocialiteManager::class,
             ],
             'commands' => [
             ],
