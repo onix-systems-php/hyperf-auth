@@ -1,9 +1,19 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace OnixSystemsPHP\HyperfAuth\Service;
 
 use Hyperf\Contract\ConfigInterface;
+use OnixSystemsPHP\HyperfCore\Constants\ErrorCode;
+use OnixSystemsPHP\HyperfCore\Exception\BusinessException;
 use OnixSystemsPHP\HyperfCore\Service\Service;
 use OnixSystemsPHP\HyperfSocialite\Facades\Socialite;
 use OnixSystemsPHP\HyperfSocialite\Two\AbstractProvider;
@@ -26,6 +36,10 @@ class PrepareSocialiteProviderService
             if (array_key_exists($potentialAlias, $providersConfig)) {
                 $providerAlias = $potentialAlias;
             }
+        }
+
+        if (empty($providersConfig[$providerAlias])) {
+            throw new BusinessException(ErrorCode::BAD_REQUEST_ERROR, __('exceptions.oauth.no_provider_config'));
         }
 
         $providerConfig = $providersConfig[$providerAlias];
