@@ -12,12 +12,12 @@ class GetSocialiteLoginLinkServiceTest extends AppTest
 {
     public function testMain()
     {
-        $exceptResponse = 'ok';
+        $exceptResponse = 'http://fake-url';
         $service = $this->getService($exceptResponse);
         $response = $service->run('google', 'user');
         $this->assertEquals($exceptResponse, $response);
 
-        $exceptResponse = 'ok!';
+        $exceptResponse = 'http://fake-url';
         $service = $this->getService($exceptResponse);
         $response = $service->run('fakeProvider');
         $this->assertEquals($exceptResponse, $response);

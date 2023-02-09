@@ -47,7 +47,7 @@ class SocialiteHandlerServiceTest extends AppTest
     public function setUp(): void
     {
         parent::setUp();
-        $this->createContainer([['name' => 'get']]);
+        $this->createContainer([]);
         $this->userSocialite = new UserSocialite([
             'id' => 1,
             'email' => 'test@test.com',
@@ -70,7 +70,7 @@ class SocialiteHandlerServiceTest extends AppTest
 
     public function testRegistration()
     {
-        $this->createContainer([['name' => 'get']]);
+        $this->createContainer([]);
         $this->setConfig();
         $service = $this->getService(2);
         $socialiteHandlerDTO = SocialiteHandlerDTO::make(['provider' => 'google', 'app' => 'user']);
@@ -82,7 +82,7 @@ class SocialiteHandlerServiceTest extends AppTest
 
     public function testConnect()
     {
-        $this->createContainer([['name' => 'get']]);
+        $this->createContainer([]);
         $this->setConfig();
         $service = $this->getService(0, true, userIsPresent: true);
         $socialiteHandlerDTO = SocialiteHandlerDTO::make(['provider' => 'google', 'app' => 'user']);
@@ -94,7 +94,7 @@ class SocialiteHandlerServiceTest extends AppTest
 
     public function testLogin()
     {
-        $this->createContainer([['name' => 'get']]);
+        $this->createContainer([]);
         $this->setConfig();
         $service = $this->getService(1, userIsPresent: true);
         $socialiteHandlerDTO = SocialiteHandlerDTO::make(['provider' => 'google', 'app' => 'user']);
@@ -107,7 +107,7 @@ class SocialiteHandlerServiceTest extends AppTest
     public function testIfEmptyRequest()
     {
         $this->setConfig();
-        $this->createContainer([['name' => 'get', 'return' => $this->trans]]);
+        $this->createContainer([TranslatorInterface::class => $this->trans]);
         $service = $this->getService();
         $socialiteHandlerDTO = SocialiteHandlerDTO::make(['provider' => 'google', 'app' => 'user']);
         $jwtGuard = $this->createMock(JwtGuard::class);
@@ -117,7 +117,7 @@ class SocialiteHandlerServiceTest extends AppTest
 
     public function testIfCreateUserClassNotFound()
     {
-        $this->createContainer([['name' => 'get', 'return' => $this->trans]]);
+        $this->createContainer([TranslatorInterface::class => $this->trans]);
         $this->setConfig();
         $service = $this->getService(isCreateUserClassIsNotFound: true);
         $socialiteHandlerDTO = SocialiteHandlerDTO::make(['provider' => 'google', 'app' => 'user']);
@@ -129,7 +129,7 @@ class SocialiteHandlerServiceTest extends AppTest
 
     public function testIfRoleEmptyInConfig()
     {
-        $this->createContainer([['name' => 'get', 'return' => $this->trans]]);
+        $this->createContainer([TranslatorInterface::class => $this->trans]);
         $this->setConfig();
         $this->config->set('socialite.apps.user', '');
         $service = $this->getService();
@@ -142,7 +142,7 @@ class SocialiteHandlerServiceTest extends AppTest
 
     public function testIfServicesEmptyInConfig()
     {
-        $this->createContainer([['name' => 'get', 'return' => $this->trans]]);
+        $this->createContainer([TranslatorInterface::class => $this->trans]);
         $this->setConfig();
         $this->config->set('socialite.services.create_user', '');
         $service = $this->getService();
@@ -155,7 +155,7 @@ class SocialiteHandlerServiceTest extends AppTest
 
     public function testIfAppEmptyInConfig()
     {
-        $this->createContainer([['name' => 'get', 'return' => $this->trans]]);
+        $this->createContainer([TranslatorInterface::class => $this->trans]);
         $this->setConfig();
         $this->config->set('auth.apps.user', ['fakeData']);
         $service = $this->getService(1);
@@ -175,9 +175,6 @@ class SocialiteHandlerServiceTest extends AppTest
         $googleProvider = $this->createMock(GoogleProvider::class);
         $socialiteManager = $this->createMock(SocialiteManager::class);
         $socialiteManager->method('with')->willReturn($googleProvider);
-
-        $googleProvider = $this->createMock(GoogleProvider::class);
-        $googleProvider->method('user')->willReturn($this->user);
 
         $authenticatable = $this->createMock(AuthenticatableModel::class);
         $authenticatable->method('getRole')->willReturn('user');
@@ -224,6 +221,6 @@ class SocialiteHandlerServiceTest extends AppTest
         $this->config = new Config([]);
         $this->config->set('socialite.apps.user', 'user');
         $this->config->set('auth.apps.user', ['user']);
-        $this->config->set('socialite.services.create_user', '\Fake::class');
+        $this->config->set('socialite.services.create_user', '\Fake');
     }
 }

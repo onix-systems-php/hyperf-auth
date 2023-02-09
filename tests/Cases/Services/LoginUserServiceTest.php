@@ -13,14 +13,15 @@ namespace OnixSystemsPHP\HyperfAuth\Test\Cases\Services;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\TranslatorInterface;
+use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
-use Hyperf\Validation\UnauthorizedException;
-use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
+use Hyperf\Validation\ValidationException;
 use OnixSystemsPHP\HyperfAuth\Contract\AuthenticatableRepository;
 use OnixSystemsPHP\HyperfAuth\Contract\TokenGuard;
 use OnixSystemsPHP\HyperfAuth\DTO\LoginDTO;
 use OnixSystemsPHP\HyperfAuth\Service\LoginUserService;
 use OnixSystemsPHP\HyperfAuth\Test\Cases\AppTest;
+use OnixSystemsPHP\HyperfAuth\Test\Mocks\AuthenticatableModel;
 use OnixSystemsPHP\HyperfCore\Exception\BusinessException;
 use Qbhy\SimpleJwt\Interfaces\Encrypter;
 
@@ -34,7 +35,7 @@ class LoginUserServiceTest extends AppTest
     {
         $trans = $this->createMock(TranslatorInterface::class);
         $trans->method('trans')->willReturn('fakeTrans');
-        $this->createContainer([['name' => 'get', 'return' => $trans]]);
+        $this->createContainer([TranslatorInterface::class => $trans]);
         parent::setUp();
     }
 
@@ -79,7 +80,7 @@ class LoginUserServiceTest extends AppTest
         $loginDto = LoginDTO::make(['login' => 'Login', 'password' => '', 'app' => 'admin']);
         $tokenGuard = $this->createMock(TokenGuard::class);
         $service = $this->getService('admin', true, ['user', 'admin'], 0, false);
-        $this->expectException(UnauthorizedException::class);
+        $this->expectException(ValidationException::class);
         $service->run($loginDto, $tokenGuard);
     }
 
@@ -92,7 +93,8 @@ class LoginUserServiceTest extends AppTest
     ): LoginUserService {
         $validatorFactoryInterface = $this->createMock(ValidatorFactoryInterface::class);
         if (! $is_valid) {
-            $validatorFactoryInterface->method('make')->willThrowException(new UnauthorizedException());
+            $ValidatorInterface = $this->createMock(ValidatorInterface::class);
+            $validatorFactoryInterface->method('make')->willThrowException(new ValidationException($ValidatorInterface));
         }
 
         $encrypter = $this->createMock(Encrypter::class);
@@ -100,7 +102,7 @@ class LoginUserServiceTest extends AppTest
 
         $authenticatableRepository = $this->createMock(AuthenticatableRepository::class);
         if ($role) {
-            $authenticatable = $this->createMock(Authenticatable::class);
+            $authenticatable = $this->createMock(AuthenticatableModel::class);
             $authenticatable->method('getRole')->willReturn($role);
             $authenticatableRepository->method('getByLogin')->willReturn($authenticatable);
 

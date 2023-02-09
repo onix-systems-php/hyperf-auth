@@ -22,7 +22,7 @@ class RefreshTokenServiceTest extends AppTest
     public function testMain()
     {
         $tokenGuard = $this->createMock(TokenGuard::class);
-        $tokenGuard->method('refresh')->willReturn(AuthTokensDTO::make([
+        $tokenGuard->expects($this->once())->method('refresh')->willReturn(AuthTokensDTO::make([
             'access_token' => 'access_token',
             'refresh_token' => 'refresh_token',
         ]));
@@ -35,7 +35,7 @@ class RefreshTokenServiceTest extends AppTest
     public function testDontValid()
     {
         $tokenGuard = $this->createMock(TokenGuard::class);
-        $tokenGuard->method('refresh')->willReturn(AuthTokensDTO::make([
+        $tokenGuard->expects($this->once())->method('refresh')->willReturn(AuthTokensDTO::make([
             'access_token' => 'access_token',
             'refresh_token' => 'refresh_token',
         ]));
@@ -51,7 +51,7 @@ class RefreshTokenServiceTest extends AppTest
         $coreAuthenticatableProvider = $this->createMock(CoreAuthenticatableProvider::class);
         $corePolicyGuard = $this->createMock(CorePolicyGuard::class);
         if (! $is_valid) {
-            $corePolicyGuard->method('check')->willThrowException(new BusinessException());
+            $corePolicyGuard->expects($this->once())->method('check')->willThrowException(new BusinessException());
         }
         return new RefreshTokenService(
             $coreAuthenticatableProvider,

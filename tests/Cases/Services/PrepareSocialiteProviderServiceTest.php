@@ -2,64 +2,82 @@
 
 namespace OnixSystemsPHP\HyperfAuth\Test\Cases\Services;
 
+use Hyperf\Config\Config;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\SessionInterface;
+use Hyperf\Contract\TranslatorInterface;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\HttpServer\Request;
 use OnixSystemsPHP\HyperfAuth\Service\PrepareSocialiteProviderService;
 use OnixSystemsPHP\HyperfAuth\Test\Cases\AppTest;
+use OnixSystemsPHP\HyperfCore\Exception\BusinessException;
+use OnixSystemsPHP\HyperfSocialite\Contracts\Factory;
 use OnixSystemsPHP\HyperfSocialite\SocialiteManager;
+use OnixSystemsPHP\HyperfSocialite\Two\GithubProvider;
 use OnixSystemsPHP\HyperfSocialite\Two\GoogleProvider;
-use PHPUnit\Framework\Error\Warning;
 
 class PrepareSocialiteProviderServiceTest extends AppTest
 {
+    private ConfigInterface $config;
+
     public function setUp(): void
     {
-        $googleProvider = $this->createMock(GoogleProvider::class);
-        $socialiteManager = $this->createMock(SocialiteManager::class);
-        $socialiteManager->method('with')->willReturn($googleProvider);
-        $this->createContainer([['name' => 'make', 'return' => $socialiteManager]]);
+        $trans = $this->createMock(TranslatorInterface::class);
+        $trans->method('trans')->willReturn('fakeTrans');
+        $this->setConfig();
+        $this->createContainer([
+            TranslatorInterface::class => $trans,
+            ConfigInterface::class => $this->config,
+            RequestInterface::class => new Request(),
+            SessionInterface::class => $this->createMock(SessionInterface::class),
+        ]);
+
+        $this->container->set(Factory::class, new SocialiteManager($this->container));
 
         parent::setUp();
     }
 
-    public function testMain()
+    public function testGithub()
     {
-        $service = $this->getService(['google' => 'ok']);
-        $service->run('google', 'user');
-        $this->assertTrue(true);
+        $this->setConfig();
+        $service = new PrepareSocialiteProviderService($this->config);
+        $provider = $service->run('github', 'user');
+        $this->assertInstanceOf(GithubProvider::class, $provider);
     }
 
-    public function testProviderApp()
+    public function testGoogleUser()
     {
-        $service = $this->getService(['google_user' => 'ok']);
-        $service->run('google', 'user');
-        $this->assertTrue(true);
+        $this->setConfig();
+        $service = new PrepareSocialiteProviderService($this->config);
+        $provider = $service->run('google_user', 'user');
+        $this->assertInstanceOf(GoogleProvider::class, $provider);
     }
 
     public function testConfigIsEmpty()
     {
-        $service = $this->getService([]);
+        $this->config = new Config([]);
+        $service = new PrepareSocialiteProviderService($this->config);
         try {
             $service->run('google', 'user');
             $this->fail();
-        } catch (Warning) {
+        } catch (BusinessException) {
             $this->assertTrue(true);
         }
     }
 
     public function testProviderProviderPresentInConfig()
     {
-        $service = $this->getService(['google' => ['provider' => 'google']]);
+        $this->setConfig();
+        $service = new PrepareSocialiteProviderService($this->config);
         $provider = $service->run('google', 'user');
-        $this->assertTrue(true);
+        $this->assertInstanceOf(GoogleProvider::class, $provider);
     }
 
-    protected function getService(array $config): PrepareSocialiteProviderService
+    private function setConfig(): void
     {
-        $configInterface = $this->createMock(ConfigInterface::class);
-        $configInterface->method('get')->willReturn($config);
-
-        return new PrepareSocialiteProviderService(
-            $configInterface
-        );
+        $this->config = new Config([]);
+        $providerData = ['client_id' => 'fakeId', 'client_secret' => 'fakeSecret', 'redirect' => 'https://fake-url'];
+        $this->config->set('socialite.github', $providerData);
+        $this->config->set('socialite.google_user', ['provider' => GoogleProvider::class, ...$providerData]);
     }
 }

@@ -11,11 +11,10 @@ declare(strict_types=1);
  */
 namespace OnixSystemsPHP\HyperfAuth\Test\Cases;
 
-use Hyperf\Di\Container;
+use Hyperf\Contract\ContainerInterface;
 use Hyperf\Event\EventDispatcher;
 use Hyperf\Utils\ApplicationContext;
-use OnixSystemsPHP\HyperfSocialite\SocialiteManager;
-use OnixSystemsPHP\HyperfSocialite\Two\GoogleProvider;
+use OnixSystemsPHP\HyperfAuth\Test\Mocks\TestContainer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  */
 class AppTest extends TestCase
 {
-    protected ?MockObject $trans = null;
+    protected ContainerInterface $container;
 
     public function tearDown(): void
     {
@@ -54,10 +53,12 @@ class AppTest extends TestCase
 
     protected function createContainer(array $methods = []): void
     {
-        $container = $this->createMock(Container::class);
-        foreach ($methods as $method) {
-            $container->method($method['name'])->willReturn($method['return'] ?? null);
+        $this->container = new TestContainer();
+
+        foreach ($methods as $key => $value) {
+            $this->container->set($key, $value);
         }
-        ApplicationContext::setContainer($container);
+
+        ApplicationContext::setContainer($this->container);
     }
 }

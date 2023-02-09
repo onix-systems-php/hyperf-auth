@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace OnixSystemsPHP\HyperfAuth\Test\Cases\Services;
 
 use OnixSystemsPHP\HyperfAuth\AuthManager;
-use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
 use OnixSystemsPHP\HyperfAuth\Service\LogoutUserService;
 use OnixSystemsPHP\HyperfAuth\Test\Cases\AppTest;
+use OnixSystemsPHP\HyperfAuth\Test\Mocks\AuthenticatableModel;
 
 /**
  * @internal
@@ -24,14 +24,16 @@ class LogoutUserServiceTest extends AppTest
 {
     public function testMain(): void
     {
-        $authenticatable = $this->createMock(Authenticatable::class);
+        $authenticatable = $this->createMock(AuthenticatableModel::class);
         $authManager = $this->createMock(AuthManager::class);
+        $authManager->expects($this->once())->method('logout');
         $authManager->method('user')->willReturn($authenticatable);
         $service = $this->getService(1);
         $service->run($authManager);
         $this->assertTrue(true);
 
         $authManager = $this->createMock(AuthManager::class);
+        $authManager->expects($this->never())->method('logout');
         $service = $this->getService(0);
         $service->run($authManager);
         $this->assertTrue(true);
