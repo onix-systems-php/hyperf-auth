@@ -60,7 +60,11 @@ class SocialiteHandlerService
                 throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.oauth.no_request'));
             }
             $socialiteProvider->setRequest($request);
-            $socialiteUser = $socialiteProvider->user();
+            try {
+                $socialiteUser = $socialiteProvider->user();
+            } catch (InvalidCodeException) {
+                throw new BusinessException(ErrorCode::BAD_REQUEST_ERROR, __('exceptions.oauth.socialite_code'));
+            }
         }
         $providerUser = $this->makeUserSocialiteDto($socialiteUser, $socialiteHandlerDTO->provider);
 
