@@ -62,7 +62,7 @@ class SocialiteHandlerService
             $socialiteProvider->setRequest($request);
             try {
                 $socialiteUser = $socialiteProvider->user();
-            } catch (InvalidCodeException) {
+            } catch (\Throwable) {
                 throw new BusinessException(ErrorCode::BAD_REQUEST_ERROR, __('exceptions.oauth.socialite_code'));
             }
         }
