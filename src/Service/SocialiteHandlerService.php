@@ -76,9 +76,12 @@ class SocialiteHandlerService
         $logsData = ['provider' => $socialiteHandlerDTO->provider ?? null];
 
         if (! empty($userSocialite)) {
-            $user = $userSocialite->user;
-            if (! empty($sessionUser) && $user->getId() != $sessionUser->getId()) {
+            if (! empty($sessionUser) && $userSocialite->user_id != $sessionUser->getId()) {
                 throw new BusinessException(ErrorCode::VALIDATION_ERROR, __('exceptions.oauth.account_already_assigned'));
+            }
+            $user = $userSocialite->user;
+            if (empty($user)) {
+                throw new BusinessException(ErrorCode::FORBIDDEN_ERROR, __('exceptions.login.archived'));
             }
         } else {
             $user = ! empty($sessionUser) ? $sessionUser : $this->rUser->getByEmail($providerUser->email);
