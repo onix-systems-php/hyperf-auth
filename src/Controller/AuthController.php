@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Controller;
 
 use OnixSystemsPHP\HyperfAuth\AuthManager;
@@ -18,8 +24,7 @@ class AuthController extends AbstractController
 {
     public function __construct(
         private AuthManager $authManager,
-    ) {
-    }
+    ) {}
 
     #[OA\Post(
         path: '/v1/auth/login',
@@ -35,9 +40,9 @@ class AuthController extends AbstractController
                 new OA\Property(property: 'status', type: 'string'),
                 new OA\Property(property: 'data', ref: '#/components/schemas/ResourceAuthToken'),
             ])),
-            new OA\Response(response: 404, ref: '#/components/responses/404'),
-            new OA\Response(response: 422, ref: '#/components/responses/422'),
-            new OA\Response(response: 500, ref: '#/components/responses/500'),
+            new OA\Response(ref: '#/components/responses/404', response: 404),
+            new OA\Response(ref: '#/components/responses/422', response: 422),
+            new OA\Response(ref: '#/components/responses/500', response: 500),
         ],
     )]
     public function login(RequestLogin $request, LoginUserService $loginUserService): ResourceAuthToken
@@ -60,8 +65,8 @@ class AuthController extends AbstractController
                 new OA\Property(property: 'status', type: 'string'),
                 new OA\Property(property: 'data', ref: '#/components/schemas/ResourceSuccess'),
             ])),
-            new OA\Response(response: 401, ref: '#/components/responses/401'),
-            new OA\Response(response: 500, ref: '#/components/responses/500'),
+            new OA\Response(ref: '#/components/responses/401', response: 401),
+            new OA\Response(ref: '#/components/responses/500', response: 500),
         ],
     )]
     public function logout(
@@ -70,7 +75,6 @@ class AuthController extends AbstractController
         $logoutUserService->run($this->authManager);
         return new ResourceSuccess([]);
     }
-
 
     #[OA\Post(
         path: '/v1/auth/refresh',
@@ -86,8 +90,8 @@ class AuthController extends AbstractController
                 new OA\Property(property: 'status', type: 'string'),
                 new OA\Property(property: 'data', ref: '#/components/schemas/ResourceAuthToken'),
             ])),
-            new OA\Response(response: 401, ref: '#/components/responses/401'),
-            new OA\Response(response: 500, ref: '#/components/responses/500'),
+            new OA\Response(ref: '#/components/responses/401', response: 401),
+            new OA\Response(ref: '#/components/responses/500', response: 500),
         ],
     )]
     public function refresh(

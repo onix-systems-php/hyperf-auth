@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth;
 
 use Hyperf\Contract\ConfigInterface;
@@ -46,8 +52,7 @@ class AuthManager extends BaseAuthManager implements TokenGuardProvider
 
     public function tokenGuard(): JwtGuard
     {
-        /** @var JwtGuard $guard */
-        $guard = $this->guard('jwt');
-        return $guard;
+        /* @var JwtGuard $guard */
+        return $this->guard('jwt');
     }
 }

@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Service;
 
 use Hyperf\Contract\ConfigInterface;
@@ -19,6 +25,8 @@ use OnixSystemsPHP\HyperfCore\Service\Service;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Qbhy\SimpleJwt\Interfaces\Encrypter;
 
+use function Hyperf\Translation\__;
+
 #[Service]
 class LoginUserService
 {
@@ -31,8 +39,7 @@ class LoginUserService
         private EventDispatcherInterface $eventDispatcher,
         private ConfigInterface $config,
         private ?CorePolicyGuard $policyGuard,
-    ) {
-    }
+    ) {}
 
     #[Transactional(attempts: 1)]
     public function run(LoginDTO $params, TokenGuard $jwtGuard): AuthTokensDTO

@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Middleware;
 
 use Carbon\Carbon;
@@ -21,12 +27,11 @@ class SessionMiddleware implements MiddlewareInterface
         private AuthManager $authManager,
         private ConfigInterface $config,
         private SessionManager $sessionManager,
-    ) {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!str_contains($request->getUri()->getPath(), 'auth/refresh')) {
+        if (! str_contains($request->getUri()->getPath(), 'auth/refresh')) {
             $this->authManager->user();
         }
 

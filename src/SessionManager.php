@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth;
 
 use Hyperf\Context\Context;
@@ -34,7 +40,7 @@ class SessionManager extends BaseSessionManager implements AuthenticatableProvid
         return (bool) Context::get(SessionInterface::class)?->isStarted();
     }
 
-    public function user(): Authenticatable|null
+    public function user(): null|Authenticatable
     {
         if ($this->isSessionStarted()) {
             return $this->getSession()->get('user');

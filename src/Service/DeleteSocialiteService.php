@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Service;
 
 use Hyperf\DbConnection\Annotation\Transactional;
@@ -19,8 +25,7 @@ class DeleteSocialiteService
         private UserSocialiteRepository $rUserSocial,
         private ?CorePolicyGuard $policyGuard,
         private EventDispatcherInterface $eventDispatcher,
-    ) {
-    }
+    ) {}
 
     #[Transactional(attempts: 1)]
     public function run(string $providerName, int $userId): void

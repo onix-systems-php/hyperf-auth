@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Controller;
 
 use OnixSystemsPHP\HyperfAuth\Contract\TokenGuardProvider;
@@ -22,9 +28,7 @@ class AuthSocialiteController extends AbstractController
     public function __construct(
         private TokenGuardProvider $authManager,
         private CoreAuthenticatableProvider $authenticatableProvider,
-    ) {
-    }
-
+    ) {}
 
     #[OA\Get(
         path: '/v1/auth-socialite/{provider}/{app}/login',
@@ -33,17 +37,29 @@ class AuthSocialiteController extends AbstractController
         tags: ['auth_socialite'],
         parameters: [
             new OA\Parameter(ref: '#/components/parameters/Locale'),
-            new OA\Parameter(name: 'provider', in: 'path', required: true, schema: new OA\Schema(type: 'string'), description: 'Social provider'),
-            new OA\Parameter(name: 'app', in: 'path', required: true, schema: new OA\Schema(type: 'string'), description: 'Requesting app keyname'),
+            new OA\Parameter(
+                name: 'provider',
+                description: 'Social provider',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string')
+            ),
+            new OA\Parameter(
+                name: 'app',
+                description: 'Requesting app keyname',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string')
+            ),
         ],
         responses: [
             new OA\Response(response: 200, description: '', content: new OA\JsonContent(properties: [
                 new OA\Property(property: 'status', type: 'string'),
                 new OA\Property(property: 'data', ref: '#/components/schemas/ResourceLoginLink'),
             ])),
-            new OA\Response(response: 401, ref: '#/components/responses/401'),
-            new OA\Response(response: 422, ref: '#/components/responses/422'),
-            new OA\Response(response: 500, ref: '#/components/responses/500'),
+            new OA\Response(ref: '#/components/responses/401', response: 401),
+            new OA\Response(ref: '#/components/responses/422', response: 422),
+            new OA\Response(ref: '#/components/responses/500', response: 500),
         ],
     )]
     public function getLoginLink(RequestProviders $request, GetSocialiteLoginLinkService $redirectService): ResourceLoginLink
@@ -58,18 +74,35 @@ class AuthSocialiteController extends AbstractController
         tags: ['auth_socialite'],
         parameters: [
             new OA\Parameter(ref: '#/components/parameters/Locale'),
-            new OA\Parameter(name: 'provider', in: 'path', required: true, schema: new OA\Schema(type: 'string'), description: 'Social provider'),
-            new OA\Parameter(name: 'app', in: 'path', required: true, schema: new OA\Schema(type: 'string'), description: 'Requesting app keyname'),
-            new OA\Parameter(name: 'code', in: 'query', schema: new OA\Schema(type: 'string'), description: 'OAuth code'),
+            new OA\Parameter(
+                name: 'provider',
+                description: 'Social provider',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string')
+            ),
+            new OA\Parameter(
+                name: 'app',
+                description: 'Requesting app keyname',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string')
+            ),
+            new OA\Parameter(
+                name: 'code',
+                description: 'OAuth code',
+                in: 'query',
+                schema: new OA\Schema(type: 'string')
+            ),
         ],
         responses: [
             new OA\Response(response: 200, description: '', content: new OA\JsonContent(properties: [
                 new OA\Property(property: 'status', type: 'string'),
                 new OA\Property(property: 'data', ref: '#/components/schemas/ResourceAuthToken'),
             ])),
-            new OA\Response(response: 401, ref: '#/components/responses/404'),
-            new OA\Response(response: 422, ref: '#/components/responses/422'),
-            new OA\Response(response: 500, ref: '#/components/responses/500'),
+            new OA\Response(ref: '#/components/responses/404', response: 401),
+            new OA\Response(ref: '#/components/responses/422', response: 422),
+            new OA\Response(ref: '#/components/responses/500', response: 500),
         ],
     )]
     public function webHandler(
@@ -103,9 +136,9 @@ class AuthSocialiteController extends AbstractController
                 new OA\Property(property: 'status', type: 'string'),
                 new OA\Property(property: 'data', ref: '#/components/schemas/ResourceAuthToken'),
             ])),
-            new OA\Response(response: 401, ref: '#/components/responses/404'),
-            new OA\Response(response: 422, ref: '#/components/responses/422'),
-            new OA\Response(response: 500, ref: '#/components/responses/500'),
+            new OA\Response(ref: '#/components/responses/404', response: 401),
+            new OA\Response(ref: '#/components/responses/422', response: 422),
+            new OA\Response(ref: '#/components/responses/500', response: 500),
         ],
     )]
     public function appHandler(
@@ -127,15 +160,21 @@ class AuthSocialiteController extends AbstractController
         tags: ['auth_socialite'],
         parameters: [
             new OA\Parameter(ref: '#/components/parameters/Locale'),
-            new OA\Parameter(name: 'provider', in: 'path', required: true, schema: new OA\Schema(type: 'string'), description: 'Social provider'),
+            new OA\Parameter(
+                name: 'provider',
+                description: 'Social provider',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string')
+            ),
         ],
         responses: [
             new OA\Response(response: 200, description: '', content: new OA\JsonContent(properties: [
                 new OA\Property(property: 'status', type: 'string'),
                 new OA\Property(property: 'data', ref: '#/components/schemas/ResourceSuccess'),
             ])),
-            new OA\Response(response: 401, ref: '#/components/responses/404'),
-            new OA\Response(response: 500, ref: '#/components/responses/500'),
+            new OA\Response(ref: '#/components/responses/404', response: 401),
+            new OA\Response(ref: '#/components/responses/500', response: 500),
         ],
     )]
     public function deleteSocialProvider(

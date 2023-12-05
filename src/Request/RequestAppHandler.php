@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Request;
 
 use Hyperf\Contract\ConfigInterface;
@@ -12,7 +18,7 @@ use OpenApi\Attributes as OA;
     schema: 'RequestAppHandler',
     properties: [
         new OA\Property(property: 'provider', type: 'string', example: 'google'),
-        new OA\Property(property: 'app', type: 'string', example: 'admin', description: 'Requesting app keyname'),
+        new OA\Property(property: 'app', description: 'Requesting app keyname', type: 'string', example: 'admin'),
         new OA\Property(property: 'token', type: 'string'),
     ],
     type: 'object',

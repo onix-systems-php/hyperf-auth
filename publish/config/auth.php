@@ -1,6 +1,11 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 use App\Model\User;
 use OnixSystemsPHP\HyperfAuth\Guards\JwtGuard;
 use OnixSystemsPHP\HyperfCore\Constants\Time;
@@ -8,6 +13,9 @@ use Qbhy\HyperfAuth\HyperfRedisCache;
 use Qbhy\HyperfAuth\Provider\EloquentProvider;
 use Qbhy\SimpleJwt\Encoders;
 use Qbhy\SimpleJwt\EncryptAdapters as Encrypter;
+
+use function Hyperf\Support\env;
+use function Hyperf\Support\make;
 
 return [
     'salt' => env('SALT'),

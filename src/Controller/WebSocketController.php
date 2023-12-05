@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Controller;
 
 use Carbon\Carbon;
@@ -17,7 +23,6 @@ use OnixSystemsPHP\HyperfAuth\SessionManager;
 
 class WebSocketController extends BaseNamespace
 {
-
     public function __construct(
         Sender $sender,
         SidProviderInterface $sidProvider,
@@ -28,7 +33,6 @@ class WebSocketController extends BaseNamespace
     ) {
         parent::__construct($sender, $sidProvider, $config);
     }
-
 
     #[Event('connect')]
     public function connect(Socket $socket, $data)
