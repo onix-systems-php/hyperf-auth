@@ -1,5 +1,12 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Test\Cases\Services;
 
 use OnixSystemsPHP\HyperfAuth\Service\GetSocialiteLoginLinkService;
@@ -8,6 +15,10 @@ use OnixSystemsPHP\HyperfAuth\Test\Cases\AppTest;
 use OnixSystemsPHP\HyperfSocialite\Two\AbstractProvider;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class GetSocialiteLoginLinkServiceTest extends AppTest
 {
     public function testMain()

@@ -1,7 +1,14 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 use App\Resource\User\ResourceUser;
+
+use function Hyperf\Support\env;
 
 return [
     'active_providers' => env('SOCIAL_ACTIVE_PROVIDERS', implode(',', ['google', 'github', 'gitlab', 'facebook', 'linkedin', 'bitbucket'])),

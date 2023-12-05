@@ -1,13 +1,18 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth;
 
 class ConfigProvider
 {
     public function __invoke(): array
     {
-
         return [
             'dependencies' => [
                 \OnixSystemsPHP\HyperfCore\Contract\CoreAuthenticatableProvider::class => \OnixSystemsPHP\HyperfAuth\SessionManager::class,

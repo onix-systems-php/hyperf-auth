@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Service;
 
 use Hyperf\Contract\ConfigInterface;
@@ -25,10 +31,13 @@ use OnixSystemsPHP\HyperfSocialite\AbstractUser;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
+use function Hyperf\Translation\__;
+
 #[Service]
 class SocialiteHandlerService
 {
     public const ACTION_LOGIN = 'login';
+
     public const ACTION_CONNECT = 'connect_social';
 
     public function __construct(
@@ -40,8 +49,7 @@ class SocialiteHandlerService
         private ConfigInterface $config,
         private ContainerInterface $container,
         private ?CorePolicyGuard $policyGuard,
-    ) {
-    }
+    ) {}
 
     #[Transactional(attempts: 1)]
     public function run(
@@ -120,7 +128,7 @@ class SocialiteHandlerService
 
         $user = $createUserService->run($userSocialiteDTO, $role);
 
-        if (!empty($userSocialiteDTO->avatar_url)) {
+        if (! empty($userSocialiteDTO->avatar_url)) {
             $this->assignSocialAvatar($user, $userSocialiteDTO);
         }
 

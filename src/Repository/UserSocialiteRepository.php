@@ -1,9 +1,15 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Repository;
 
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 use OnixSystemsPHP\HyperfAuth\Model\UserSocialite;
 use OnixSystemsPHP\HyperfCore\Model\AbstractModel;
 use OnixSystemsPHP\HyperfCore\Model\Builder;

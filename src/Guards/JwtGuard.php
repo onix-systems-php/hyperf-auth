@@ -1,16 +1,22 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Guards;
 
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\SessionInterface;
 use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
+use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
 use OnixSystemsPHP\HyperfAuth\Contract\TokenGuard;
 use OnixSystemsPHP\HyperfAuth\DTO\AuthTokensDTO;
-use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
 use OnixSystemsPHP\HyperfAuth\SessionManager;
 use Psr\Http\Message\ServerRequestInterface;
 use Qbhy\HyperfAuth\Authenticatable as BaseAuthenticatable;
@@ -19,6 +25,8 @@ use Qbhy\HyperfAuth\UserProvider;
 use Qbhy\SimpleJwt\Exceptions\InvalidTokenException;
 use Qbhy\SimpleJwt\Exceptions\TokenExpiredException;
 use Qbhy\SimpleJwt\JWTManager;
+
+use function Hyperf\Translation\__;
 
 class JwtGuard extends AbstractAuthGuard implements TokenGuard
 {
@@ -75,7 +83,7 @@ class JwtGuard extends AbstractAuthGuard implements TokenGuard
         ]);
     }
 
-    public function user(): Authenticatable|null
+    public function user(): null|Authenticatable
     {
         try {
             $accessToken = $this->getAccessToken();
@@ -165,7 +173,7 @@ class JwtGuard extends AbstractAuthGuard implements TokenGuard
         return null;
     }
 
-    public function fromAccessToken(?string $jwtToken = null): Authenticatable|null
+    public function fromAccessToken(?string $jwtToken = null): null|Authenticatable
     {
         try {
             return $this->parseUser($jwtToken);
@@ -174,7 +182,7 @@ class JwtGuard extends AbstractAuthGuard implements TokenGuard
         }
     }
 
-    protected function parseUser(?string $accessToken): Authenticatable|null
+    protected function parseUser(?string $accessToken): null|Authenticatable
     {
         $user = null;
         if (! empty($accessToken)) {

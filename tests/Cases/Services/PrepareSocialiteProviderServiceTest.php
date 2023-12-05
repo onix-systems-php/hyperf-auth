@@ -1,5 +1,12 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Test\Cases\Services;
 
 use Hyperf\Config\Config;
@@ -16,6 +23,10 @@ use OnixSystemsPHP\HyperfSocialite\SocialiteManager;
 use OnixSystemsPHP\HyperfSocialite\Two\GithubProvider;
 use OnixSystemsPHP\HyperfSocialite\Two\GoogleProvider;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PrepareSocialiteProviderServiceTest extends AppTest
 {
     private ConfigInterface $config;

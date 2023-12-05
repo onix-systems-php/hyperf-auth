@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of the extension library for Hyperf.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace OnixSystemsPHP\HyperfAuth\Service;
 
 use Hyperf\Contract\ConfigInterface;
@@ -18,13 +16,14 @@ use OnixSystemsPHP\HyperfCore\Service\Service;
 use OnixSystemsPHP\HyperfSocialite\Facades\Socialite;
 use OnixSystemsPHP\HyperfSocialite\Two\AbstractProvider;
 
+use function Hyperf\Translation\__;
+
 #[Service]
 class PrepareSocialiteProviderService
 {
     public function __construct(
         private ConfigInterface $config,
-    ) {
-    }
+    ) {}
 
     public function run(string $provider, ?string $app = null): AbstractProvider
     {

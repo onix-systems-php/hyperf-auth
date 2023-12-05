@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Aspects;
 
 use Hyperf\Di\Annotation\Aspect;
@@ -22,8 +28,7 @@ final class WsEventAuthAspect extends AbstractAspect
     public function __construct(
         private SessionManager $sessionManager,
         private Redis $redis,
-    ) {
-    }
+    ) {}
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint): mixed
     {

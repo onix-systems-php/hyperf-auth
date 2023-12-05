@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the extension library for Hyperf.
+ *
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
+
 namespace OnixSystemsPHP\HyperfAuth\Resource;
 
 use OnixSystemsPHP\HyperfAuth\DTO\AuthTokensDTO;
@@ -23,8 +29,6 @@ class ResourceAuthToken extends AbstractResource
 {
     /**
      * Transform the resource into an array.
-     *
-     * @return array
      */
     public function toArray(): array
     {
