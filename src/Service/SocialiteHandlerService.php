@@ -12,6 +12,7 @@ namespace OnixSystemsPHP\HyperfAuth\Service;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\DbConnection\Annotation\Transactional;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\Logger\LoggerFactory;
 use OnixSystemsPHP\HyperfActionsLog\Event\Action;
 use OnixSystemsPHP\HyperfAuth\Contract\AssignSocialiteAvatarService;
 use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
@@ -31,6 +32,8 @@ use OnixSystemsPHP\HyperfSocialite\AbstractUser;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
+use Psr\Log\LoggerInterface;
+
 use function Hyperf\Translation\__;
 
 #[Service]
@@ -40,16 +43,24 @@ class SocialiteHandlerService
 
     public const ACTION_CONNECT = 'connect_social';
 
+    protected LoggerInterface $logger;
+
     public function __construct(
         private UserSocialiteRepository $rUserSocialite,
         private PrepareSocialiteProviderService $providerService,
         private CoreAuthenticatableProvider $authenticatableProvider,
         private AuthenticatableRepository $rUser,
+        private LoggerFactory $loggerFactory,
         private EventDispatcherInterface $eventDispatcher,
         private ConfigInterface $config,
         private ContainerInterface $container,
         private ?CorePolicyGuard $policyGuard,
-    ) {}
+    ) {
+        $this->logger = $this->loggerFactory->get(
+            $this->config->get('socialite.logger.name', 'socialite'),
+            $this->config->get('socialite.logger.group', 'default')
+        );
+    }
 
     #[Transactional(attempts: 1)]
     public function run(
@@ -70,7 +81,8 @@ class SocialiteHandlerService
             $socialiteProvider->setRequest($request);
             try {
                 $socialiteUser = $socialiteProvider->user();
-            } catch (\Throwable) {
+            } catch (\Throwable $e) {
+                $this->logger->error($e->getMessage(), $e->getTrace());
                 throw new BusinessException(ErrorCode::BAD_REQUEST_ERROR, __('exceptions.oauth.socialite_code'));
             }
         }

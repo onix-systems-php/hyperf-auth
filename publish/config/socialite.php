@@ -52,4 +52,8 @@ return [
         'redirect' => env('SOCIAL_GITLAB_REDIRECT_URL', ''),
         'host' => env('SOCIAL_GITLAB_HOST', ''),
     ],
+    'logger' => [
+        'name' => 'socialite',
+        'group' => 'default',
+    ],
 ];

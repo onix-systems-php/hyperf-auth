@@ -22,13 +22,14 @@
         "ext-json": "*",
         "ext-openssl": "*",
         "96qbhy/hyperf-auth": "^3.1",
-        "onix-systems-php/hyperf-actions-log": ">=1.2",
-        "onix-systems-php/hyperf-socialite": "^1.2",
-        "onix-systems-php/hyperf-core": ">=1.2",
         "hyperf/contract": "^3.1",
         "hyperf/guzzle": "^3.1",
+        "hyperf/logger": "^3.1",
         "hyperf/session": "^3.1",
-        "league/oauth1-client": "^1.0"
+        "league/oauth1-client": "^1.0",
+        "onix-systems-php/hyperf-actions-log": ">=1.2",
+        "onix-systems-php/hyperf-core": ">=1.2",
+        "onix-systems-php/hyperf-socialite": "^1.2"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
