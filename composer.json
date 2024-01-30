@@ -29,7 +29,7 @@
         "league/oauth1-client": "^1.0",
         "onix-systems-php/hyperf-actions-log": ">=1.2",
         "onix-systems-php/hyperf-core": ">=1.2",
-        "onix-systems-php/hyperf-socialite": "^1.2"
+        "onix-systems-php/hyperf-socialite": "^1.2.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
