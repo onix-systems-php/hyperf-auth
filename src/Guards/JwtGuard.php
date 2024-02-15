@@ -18,6 +18,7 @@ use OnixSystemsPHP\HyperfAuth\Contract\Authenticatable;
 use OnixSystemsPHP\HyperfAuth\Contract\TokenGuard;
 use OnixSystemsPHP\HyperfAuth\DTO\AuthTokensDTO;
 use OnixSystemsPHP\HyperfAuth\SessionManager;
+use OnixSystemsPHP\HyperfAuth\Trait\CustomClaims;
 use Psr\Http\Message\ServerRequestInterface;
 use Qbhy\HyperfAuth\Authenticatable as BaseAuthenticatable;
 use Qbhy\HyperfAuth\Guard\AbstractAuthGuard;
@@ -30,6 +31,8 @@ use function Hyperf\Translation\__;
 
 class JwtGuard extends AbstractAuthGuard implements TokenGuard
 {
+    use CustomClaims;
+
     protected JWTManager $jwtManager;
 
     protected SessionManager $sessionManager;
@@ -71,6 +74,7 @@ class JwtGuard extends AbstractAuthGuard implements TokenGuard
                 'sub' => $user->getId(),
                 'iss' => $this->appConfig->get('domain_api'),
                 'session_token' => $session->getId(),
+                ...$this->getCustomClaims(),
             ])
             ->token();
 

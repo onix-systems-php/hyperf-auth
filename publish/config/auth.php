@@ -11,8 +11,12 @@ use OnixSystemsPHP\HyperfAuth\Guards\JwtGuard;
 use OnixSystemsPHP\HyperfCore\Constants\Time;
 use Qbhy\HyperfAuth\HyperfRedisCache;
 use Qbhy\HyperfAuth\Provider\EloquentProvider;
-use Qbhy\SimpleJwt\Encoders;
-use Qbhy\SimpleJwt\EncryptAdapters as Encrypter;
+use Qbhy\SimpleJwt\Encoders\Base64UrlSafeEncoder;
+use Qbhy\SimpleJwt\EncryptAdapters\CryptEncrypter;
+use Qbhy\SimpleJwt\EncryptAdapters\HS256Encrypter;
+use Qbhy\SimpleJwt\EncryptAdapters\Md5Encrypter;
+use Qbhy\SimpleJwt\EncryptAdapters\PasswordHashEncrypter;
+use Qbhy\SimpleJwt\EncryptAdapters\SHA1Encrypter;
 
 use function Hyperf\Support\env;
 use function Hyperf\Support\make;
@@ -39,15 +43,15 @@ return [
             'header_name' => env('JWT_HEADER_NAME', 'Authorization'),
             'ttl' => (int) env('SIMPLE_JWT_TTL', Time::MINUTE * 2),
             'refresh_ttl' => (int) env('SIMPLE_JWT_REFRESH_TTL', Time::WEEK),
-            'default' => Encrypter\HS256Encrypter::class,
+            'default' => HS256Encrypter::class,
             'drivers' => [
-                Encrypter\PasswordHashEncrypter::alg() => Encrypter\PasswordHashEncrypter::class,
-                Encrypter\CryptEncrypter::alg() => Encrypter\CryptEncrypter::class,
-                Encrypter\SHA1Encrypter::alg() => Encrypter\SHA1Encrypter::class,
-                Encrypter\Md5Encrypter::alg() => Encrypter\Md5Encrypter::class,
-                Encrypter\HS256Encrypter::alg() => Encrypter\HS256Encrypter::class,
+                PasswordHashEncrypter::alg() => PasswordHashEncrypter::class,
+                CryptEncrypter::alg() => CryptEncrypter::class,
+                SHA1Encrypter::alg() => SHA1Encrypter::class,
+                Md5Encrypter::alg() => Md5Encrypter::class,
+                HS256Encrypter::alg() => HS256Encrypter::class,
             ],
-            'encoder' => new Encoders\Base64UrlSafeEncoder(),
+            'encoder' => new Base64UrlSafeEncoder(),
             'cache' => function () {
                 return make(HyperfRedisCache::class);
             },

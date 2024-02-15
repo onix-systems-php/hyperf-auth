@@ -6,11 +6,11 @@ declare(strict_types=1);
  *
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-use Hyperf\Session\Handler;
+use Hyperf\Session\Handler\RedisHandler;
 use OnixSystemsPHP\HyperfCore\Constants\Time;
 
 return [
-    'handler' => Handler\RedisHandler::class,
+    'handler' => RedisHandler::class,
     'options' => [
         'connection' => 'default',
         'gc_maxlifetime' => Time::WEEK,

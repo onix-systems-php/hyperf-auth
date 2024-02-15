@@ -9,16 +9,24 @@ declare(strict_types=1);
 
 namespace OnixSystemsPHP\HyperfAuth;
 
+use App\Repository\UserRepository;
+use OnixSystemsPHP\HyperfAuth\Aspects\WsEventAuthAspect;
+use OnixSystemsPHP\HyperfAuth\Contract\AuthenticatableRepository;
+use OnixSystemsPHP\HyperfAuth\Contract\TokenGuardProvider;
+use OnixSystemsPHP\HyperfAuth\Hashers\PasswordHashEncrypterFactory;
+use OnixSystemsPHP\HyperfCore\Contract\CoreAuthenticatableProvider;
+use Qbhy\SimpleJwt\Interfaces\Encrypter;
+
 class ConfigProvider
 {
     public function __invoke(): array
     {
         return [
             'dependencies' => [
-                \OnixSystemsPHP\HyperfCore\Contract\CoreAuthenticatableProvider::class => \OnixSystemsPHP\HyperfAuth\SessionManager::class,
-                \OnixSystemsPHP\HyperfAuth\Contract\TokenGuardProvider::class => \OnixSystemsPHP\HyperfAuth\AuthManager::class,
-                \Qbhy\SimpleJwt\Interfaces\Encrypter::class => \OnixSystemsPHP\HyperfAuth\Hashers\PasswordHashEncrypterFactory::class,
-                \OnixSystemsPHP\HyperfAuth\Contract\AuthenticatableRepository::class => \App\Repository\UserRepository::class,
+                CoreAuthenticatableProvider::class => SessionManager::class,
+                TokenGuardProvider::class => AuthManager::class,
+                Encrypter::class => PasswordHashEncrypterFactory::class,
+                AuthenticatableRepository::class => UserRepository::class,
             ],
             'commands' => [
             ],
@@ -30,7 +38,7 @@ class ConfigProvider
                 ],
             ],
             'aspects' => [
-                \OnixSystemsPHP\HyperfAuth\Aspects\WsEventAuthAspect::class,
+                WsEventAuthAspect::class,
             ],
             'publish' => [
                 [
