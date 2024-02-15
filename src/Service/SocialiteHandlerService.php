@@ -31,7 +31,6 @@ use OnixSystemsPHP\HyperfCore\Service\Service;
 use OnixSystemsPHP\HyperfSocialite\AbstractUser;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-
 use Psr\Log\LoggerInterface;
 
 use function Hyperf\Translation\__;
